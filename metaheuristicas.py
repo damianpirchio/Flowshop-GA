@@ -12,9 +12,19 @@ class Poblacion(object):
         #self.cromosomas = cromosomas
         self.tamano = tamano
 
-    def generar(self):
-        """"Genera Poblacion Inicial"""
-        pass
+    def generar(self, tamano_cromosoma):
+        """Genera Poblacion Inicial"""
+        for i in range(self.tamano):
+            cromosoma_actual = Cromosoma(tamano_cromosoma)
+            cromosoma_actual.generar_secuencia()
+            cromosoma_actual.evaluar_fitness()
+            self.cromosomas.append(cromosoma_actual)
+
+    def mostrar(self):
+        for c in self.cromosomas:
+            print c.secuencia
+            print c.fitness
+            print('----------------------')
 
 
 class Cromosoma(object):
@@ -24,17 +34,12 @@ class Cromosoma(object):
     def __init__(self, tamano):
         self.tamano = tamano
 
-    def evaluar(self):
-        return self.fitness
+    def evaluar_fitness(self):
+        self.fitness = random.randint(1, 100)
 
     def generar_secuencia(self):
         self.secuencia = [i for i in range(1, self.tamano + 1)]
         random.shuffle(self.secuencia)
-
-
-class Gen(object):
-    def __init__(self):
-        pass
 
 
 class Selection(object):
@@ -42,12 +47,11 @@ class Selection(object):
         pass
 
 
-class Roulette(Selection):
-    """docstring for Roulette"""
-
-    def __init__(self, arg):
-        super(Roulette, self).__init__()
-        self.arg = arg
+class PBT(Selection):
+    """docstring for Probabilistic Binary Tournament"""
+    def __init__(self):
+        super(PBT, self).__init__()
+        #def Seleccionar(self):
 
 
 class Crossover(object):
@@ -74,7 +78,6 @@ class CX(Crossover):
 class Mutation(object):
     """docstring for Mutation"""
     def __init__(self, arg):
-        super(Mutation, self).__init__()
         self.arg = arg
 
 
