@@ -34,6 +34,8 @@ class Problema(object):
     lower_bound = 0
     max_iterations = 500
 
+    tamano_poblacion = 128
+
     seleccion = None
     padres = None
     hijos = None
@@ -62,11 +64,16 @@ class Problema(object):
     def evolucionar():
         #-----------  SELECCION -----------
         pbt = PBT()
-        self.seleccion = pbt.seleccionar()  # Devuelve un cromosoma
+        for i in range(tamano_poblacion / 2):
+            crom1 = poblacion_inicial.cromosomas(
+                random.randint(0, tamano_poblacion - 1))
+            crom2 = poblacion_inicial.cromosomas(
+                random.randint(0, tamano_poblacion - 1))
+            self.padres[i] = pbt.seleccionar(crom1, crom2)  # Cromosoma
 
         #-----------  CROSSOVER  ----------
 
-        #-----------  MUTACIÓN  ----------
+        #-----------  MUTACIÓN  -----------
 
         #-----------  REEMPLAZO  ----------
         pass
@@ -83,13 +90,13 @@ class Problema(object):
 
         #-----------  GENERACIÓN POBLACIÓN INICIAL  ----------
 
-        poblacion_inicial = Poblacion()
+        poblacion_inicial = Poblacion(tamano_poblacion)
         poblacion_inicial.generar(problema.jobs)
         poblacion_inicial.mostrar()
 
-        self.padres = Poblacion()
-        self.hijos = Poblacion()
-        self.hijos_mutados = Poblacion()
+        self.padres = Poblacion(tamano_poblacion / 2)
+        self.hijos = Poblacion(tamano_poblacion)
+        self.hijos_mutados = Poblacion(tamano_poblacion)
 
         iteracion = 0
         while iteracion < max_iterations:
