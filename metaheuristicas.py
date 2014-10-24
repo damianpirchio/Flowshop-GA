@@ -37,6 +37,15 @@ class Cromosoma(object):
     def evaluar_fitness(self):
         self.fitness = random.randint(1, 100)
 
+    def evaluar_fitness2(self, datos):
+        lista = self.secuencia
+        resu = 0
+        while len(lista) > 0:
+            job = lista[0]
+            for sub_lista in datos:
+                resu = resu + datos[sub_lista[job]]
+        self.fitness = resu
+
     def generar_secuencia(self):
         self.secuencia = [i for i in range(1, self.tamano + 1)]
         random.shuffle(self.secuencia)
