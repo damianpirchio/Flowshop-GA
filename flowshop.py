@@ -34,6 +34,11 @@ class Problema(object):
     lower_bound = 0
     max_iterations = 500
 
+    seleccion = None
+    padres = None
+    hijos = None
+    hijos_mutados = None
+
     def __init__(self):
         super(Problema, self).__init__()
 
@@ -54,40 +59,43 @@ class Problema(object):
 
         return data
 
-#def evolucionar():
+    def evolucionar():
+        #-----------  SELECCION -----------
+        pbt = PBT()
+        self.seleccion = pbt.seleccionar()  # Devuelve un cromosoma
 
-#def resolver():
+        #-----------  CROSSOVER  ----------
+
+        #-----------  MUTACIÓN  ----------
+
+        #-----------  REEMPLAZO  ----------
+        pass
+
+    def resolver():
+
+        problema = self
+
+        if len(sys.argv) == 2:
+            problema.datos = problema.parsear(sys.argv[1])
+        else:
+            print "\nUsage: python flow.py <Taillard problem file>\n"
+            sys.exit(0)
+
+        #-----------  GENERACIÓN POBLACIÓN INICIAL  ----------
+
+        poblacion_inicial = Poblacion()
+        poblacion_inicial.generar(problema.jobs)
+        poblacion_inicial.mostrar()
+
+        self.padres = Poblacion()
+        self.hijos = Poblacion()
+        self.hijos_mutados = Poblacion()
+
+        iteracion = 0
+        while iteracion < max_iterations:
+            evolucionar()
+            iteracion += 1
 
 if __name__ == "__main__":
-
-    problema = Problema()
-
-    if len(sys.argv) == 2:
-        problema.datos = problema.parsear(sys.argv[1])
-    else:
-        print "\nUsage: python flow.py <Taillard problem file>\n"
-        sys.exit(0)
-
-    #-----------  GENERACIÓN POBLACIÓN INICIAL  ----------
-
-    poblacion_inicial = Poblacion()
-    poblacion_inicial.generar(problema.jobs)
-
-    poblacion_inicial.mostrar()
-
-    #while i < max_iterations:
-        #pass
-
-
-
-
-      #-----------  CROSSOVER  ----------
-
-
-
-      #-----------  MUTACIÓN  ----------
-
-
-
-
-      #-----------  REEMPLAZO  ----------
+    p = Problema()
+    p.resolver()
