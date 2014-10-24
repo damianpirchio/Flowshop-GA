@@ -48,7 +48,7 @@ class Cromosoma(object):
         self.fitness = resu
 
     def generar_secuencia(self):
-        self.secuencia = [i for i in range(1, self.tamano + 1)]
+        self.secuencia = [i for i in range(0, self.tamano)]
         random.shuffle(self.secuencia)
 
 
@@ -62,7 +62,7 @@ class PBT(Selection):
     def __init__(self):
         super(PBT, self).__init__()
 
-    def Seleccionar(self, cromosoma1, cromosoma2):
+    def seleccionar(self, cromosoma1, cromosoma2):
         probabilidad = random.randint(1, 100)
         if probabilidad < 66:
             #Tomo el mejor fitness
@@ -91,6 +91,20 @@ class PMX(Crossover):
     def __init__(self, arg):
         super(PMX, self).__init__()
         self.arg = arg
+
+    def cruzar(self, cromosoma1, cromosoma2):
+        padre1_secuencia = cromosoma1.secuencia
+        padre2_secuencia = cromosoma2.secuencia
+        #Genero dos posiciones al azar teniendo en cuenta el tamano del cromo
+        pos1 = random.randint(0, cromosoma1.tamano)
+        pos2 = random.randint(0, cromosoma1.tamano)
+        if pos1 >= pos2:
+            pos_inicial = pos2
+            pos_final = pos1
+        else:
+            pos_inicial = pos1
+            pos_final = pos2
+
 
 
 class CX(Crossover):
