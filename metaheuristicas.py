@@ -22,8 +22,8 @@ class Poblacion(object):
 
     def mostrar(self):
         for c in self.cromosomas:
-            print c.secuencia
-            print c.fitness
+            print (c.secuencia)
+            print (c.fitness)
             print('----------------------')
 
 
