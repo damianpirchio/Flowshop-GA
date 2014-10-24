@@ -44,6 +44,7 @@ class Cromosoma(object):
             job = lista[0]
             for sub_lista in datos:
                 resu = resu + datos[sub_lista[job]]
+            lista.remove(job)
         self.fitness = resu
 
     def generar_secuencia(self):
