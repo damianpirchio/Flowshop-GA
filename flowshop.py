@@ -65,14 +65,20 @@ class Problema(object):
         #-----------  SELECCION -----------
         pbt = PBT()
         for i in range(tamano_poblacion / 2):
-            crom1 = poblacion_inicial.cromosomas(
+            crom1 = self.seleccion.cromosomas(
                 random.randint(0, tamano_poblacion - 1))
-            crom2 = poblacion_inicial.cromosomas(
+            crom2 = self.seleccion.cromosomas(
                 random.randint(0, tamano_poblacion - 1))
             self.padres[i] = pbt.seleccionar(crom1, crom2)  # Cromosoma
 
         #-----------  CROSSOVER  ----------
-
+        pmx = PMX()
+        for i in range(tamano_poblacion / 2):
+            crom1 = self.padres.cromosomas(
+                random.randint(0, (tamano_poblacion // 2) - 1))
+            crom2 = self.padres.cromosomas(
+                random.randint(0, (tamano_poblacion // 2) - 1))
+            self.hijos[i] = pmx.cruzar(crom1, crom2)
         #-----------  MUTACIÓN  -----------
 
         #-----------  REEMPLAZO  ----------
@@ -94,6 +100,7 @@ class Problema(object):
         poblacion_inicial.generar(problema.jobs)
         poblacion_inicial.mostrar()
 
+        self.seleccion = poblacion_inicial
         self.padres = Poblacion(tamano_poblacion / 2)
         self.hijos = Poblacion(tamano_poblacion)
         self.hijos_mutados = Poblacion(tamano_poblacion)
