@@ -170,16 +170,76 @@ class Mutation(object):
     def __init__(self, arg):
         self.arg = arg
 
+    def mutar():
+        pass
+
 
 class Invertion(Mutation):
-    """docstring for Invertion"""
+    """This is a very simple mutation operator.
+    Select two random points (i.e.; positions 2 through 5)
+    and reverse the genes between them.
+
+    0 1 2 3 4 5 6 7
+
+    becomes
+
+    0 4 3 2 1 5 6 7
+
+    """
     def __init__(self, arg):
         super(Invertion, self).__init__()
         self.arg = arg
 
+    def mutar(self, cromosoma):
+        pos1 = random.randint(0, cromosoma.tamano - 1)
+        pos2 = random.randint(0, cromosoma.tamano - 1)
+        if pos1 < pos2:
+            revlist = cromosoma.secuencia[pos1:pos2 + 1]
+            revlist = revlist[::-1]
+            cromosoma.secuencia[pos1:pos2 + 1] = revlist
+        else:
+            revlist = cromosoma.secuencia[pos2:pos1 + 1]
+            revlist = revlist[::-1]
+            cromosoma.secuencia[pos2:pos1 + 1] = revlist
+        return None
+
 
 class Displacement(Mutation):
-    """docstring for Displacement"""
+    """Select two random points (i.e.; positions 4 and 6),
+    grab the genes between them as a group, then reinsert
+    the group at a random position displaced from the original.
+
+    0 1 2 3 4 5 6 7
+
+    becomes
+
+    0 3 4 5 1 2 6 7
+    """
     def __init__(self, arg):
         super(Displacement, self).__init__()
         self.arg = arg
+
+    def mutar(self, cromosoma):
+        pos1 = random.randint(0, cromosoma.tamano - 1)
+        pos2 = random.randint(0, cromosoma.tamano - 1)
+        if pos1 < pos2:
+            group = cromosoma.secuencia[pos1:pos2]
+            del(cromosoma[pos1:pos2])
+            randpos = random.randint(0, len(cromosoma.secuencia))
+            cromosoma.secuencia.insert(randpos, group)
+        if pos2 < pos1:
+            group = cromosoma.secuencia[pos2:pos1]
+            del(cromosoma[pos2:pos1])
+            randpos = random.randint(0, len(cromosoma.secuencia))
+            cromosoma.secuencia.insert(randpos, group)
+        cromosoma.secuencia = list(flatten(cromosoma.secuencia))
+        return None
+
+
+def flatten(*args):
+    for x in args:
+        if hasattr(x, '__iter__'):
+            for y in flatten(*x):
+                yield y
+        else:
+            yield x
