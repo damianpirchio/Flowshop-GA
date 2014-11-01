@@ -90,71 +90,47 @@ class PMX(Crossover):
     def __init__(self):
         super(PMX, self).__init__()
 
-    def eliminar_transitividad(self, lista):
-        cambio = False
-        seguir = True
-        while seguir:
-            for i in lista:
-                for j in lista:
-                    if j[0] == i[1]:
-                        i[1] = j[1]
-                        lista.remove(j)
-                        cambio = True
-            if cambio:
-                seguir = True
-                cambio = False
-            else:
-                seguir = False
-
-    def mapear(self, protochild, lista_m, pos_inicial, pos_final):
-        for i in range(len(protochild)):
-            if (i < pos_inicial) or (i > pos_final):
-                for j in range(len(lista_m)):
-                    if protochild[i] in lista_m[j]:
-                        if protochild[i] == lista_m[j][0]:
-                            protochild[i] = lista_m[j][1]
-                        else:
-                            protochild[i] = lista_m[j][0]
-        return protochild
-
     def cruzar(self, cromosoma1, cromosoma2):
         lista_respuesta = []
         padre1_secuencia = cromosoma1.secuencia
+        print("padre1: " + str(padre1_secuencia))
         padre2_secuencia = cromosoma2.secuencia
+        print("padre2: " + str(padre2_secuencia))
         #Genero dos posiciones al azar teniendo en cuenta el tamano del cromo
-        pos1 = random.randint(0, cromosoma1.tamano)
-        pos2 = random.randint(0, cromosoma1.tamano)
+        #pos1 = random.randint(0, cromosoma1.tamano)
+        #pos2 = random.randint(0, cromosoma1.tamano)
+        pos1 = 2
+        pos2 = 6
         if pos1 >= pos2:
             pos_inicial = pos2
             pos_final = pos1
         else:
             pos_inicial = pos1
             pos_final = pos2
+        print("pos inicial: " + str(pos_inicial))
+        print("pos final: " + str(pos_final))
         #Intercambio substrings entre los padres
         #---------------------------------------
         #1) Armo Substrings
-        substring1 = padre1_secuencia[pos_inicial:pos_final + 1]
-        substring2 = padre2_secuencia[pos_inicial:pos_final + 1]
+        substring1 = padre1_secuencia[pos_inicial:pos_final]
+        substring2 = padre2_secuencia[pos_inicial:pos_final]
+        print("Substring 1: " + str(substring1))
+        print("Substring 2: " + str(substring2))
         #2)Armo Protochilds
-        padre1_secuencia[pos_inicial:pos_final + 1] = substring2
-        padre2_secuencia[pos_inicial:pos_final + 1] = substring1
+        padre1_secuencia[pos_inicial:pos_final] = substring2
+        padre2_secuencia[pos_inicial:pos_final] = substring1
+        print("protochild 1: " + str(padre1_secuencia))
+        print("protochild 2: " + str(padre2_secuencia))
         #3)Armo Lista de Mapeo con los substrings
         lista_mapeo = []
         for i in range(len(substring1)):
             lista_mapeo.append([substring1[i], substring2[i]])
+        print("lista de mapeo: " + str(lista_mapeo))
         #4)Elimino Transitividad de la Lista de Mapeo
-        self.eliminar_transitividad(lista_mapeo)
         #5)Reemplazo Final con Lista De Mapeo
-        sec_hijo1 = self.mapear(padre1_secuencia, lista_mapeo, pos_inicial, pos_final)
-        sec_hijo2 = self.mapear(padre2_secuencia, lista_mapeo, pos_inicial, pos_final)
-        #6) Creo 2 hijos y les asigno la secuencia
-        h1 = Cromosoma(cromosoma1.tamano)
-        h2 = Cromosoma(cromosoma1.tamano)
-        h1.secuencia = sec_hijo1
-        h2.secuencia = sec_hijo2
-        # QUE HACEMOS CON EL FITNESS ACÁ ????
-        lista_respuesta.aappend(h1)
-        lista_respuesta.aappend(h2)
+        #for el in padre1_secuencia:
+            #if el not in substring1:
+
         return lista_respuesta
 
 
