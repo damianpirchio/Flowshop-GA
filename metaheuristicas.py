@@ -153,16 +153,57 @@ class PMX(Crossover):
         h1.secuencia = sec_hijo1
         h2.secuencia = sec_hijo2
         # QUE HACEMOS CON EL FITNESS ACÁ ????
-        lista_respuesta.aappend(h1)
-        lista_respuesta.aappend(h2)
+        lista_respuesta.append(h1)
+        lista_respuesta.append(h2)
         return lista_respuesta
 
 
 class CX(Crossover):
     """docstring for CX"""
-    def __init__(self, arg):
+    def __init__(self):
         super(CX, self).__init__()
-        self.arg = arg
+
+    def esta_en_lista(self, elemento, lista):
+        """Devuelve verdadero si un elemento pertenece a una lista de listas"""
+        rta = False
+        for sublista in lista:
+            if elemento in sublista:
+                rta = True
+        return rta
+
+    def buscar_ciclos(self, cromosoma1, cromosoma2):
+        """ Esta funcion arma una lista de listas donde cada sublista
+        esta formada, por las posiciones de los elementos que forman
+        parte de un ciclo.De esta manera obtendremos:
+        [[p1c1,p2c1,pnc1],[p1c2,p2c2,pnc2],....,[p1cn,p2cn,pncn]]
+        Donde pncn representa la posición n del ciclo n
+        """
+        lista_ciclos = []
+        encontro = True
+        while encontro:
+            encontro = False
+            inicio_ciclo = ''
+            #Recorro todo el cromosoma 1
+            for i in range(len(cromosoma1)):
+                inicio_ciclo = cromosoma1[i]
+                ciclo = []
+                # En la misma posicion el otro padre tiene un elemento diferente?
+                if cromosoma1[i] != cromosoma2[i]:
+                    #Algo
+                    pass
+
+    def cruzar(self, cromosoma1, cromosoma2):
+        lista_rta = []
+        #Reviso que los padres sean diferentes
+        if cromosoma1.secuencia != cromosoma2.secuencia:
+            #Busco ciclos entre los dos padres
+            self.buscar_ciclos(cromosoma1, cromosoma2)
+        # Si los padres son iguales los hijos iguales
+        else:
+            h1 = Cromosoma(cromosoma1.tamano)
+            h2 = Cromosoma(cromosoma1.tamano)
+            h1.secuencia = cromosoma1.secuencia
+            h2.secuencia = cromosoma1.secuencia
 
 
 class Mutation(object):
