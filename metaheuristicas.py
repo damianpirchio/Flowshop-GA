@@ -194,22 +194,23 @@ class CX(Crossover):
         return ciclo
 
     def generar_hijos(self, lista_ciclos, padre1, padre2):
+        lista_hijos = []
         if len(lista_ciclos) == 1:
-            h1 = Cromosoma(cromosoma1.tamano)
-            h2 = Cromosoma(cromosoma1.tamano)
-            h1.secuencia = cromosoma1.secuencia
-            h2.secuencia = cromosoma1.secuencia
+            h1 = Cromosoma(len(padre1))
+            h2 = Cromosoma(len(padre1))
+            h1.secuencia = padre1
+            h2.secuencia = padre1
             lista_hijos.append(h1)
             lista_hijos.append(h2)
         else:
-            for i in range(0,2):
+            for i in range(0, 2):
                 ciclo_actual = lista_ciclos[i]
-                hijo = Cromosoma(cromosoma1.tamano)
-                for j in range(len(hijo.tamano)):
+                hijo = Cromosoma(len(padre1))
+                for j in range(hijo.tamano):
                     if j in ciclo_actual:
-                        hijo.secuencia[j] = padre1[j]
+                        hijo.secuencia.append(padre1[j])
                     else:
-                        hijo.secuencia[j] = padre2[j]
+                        hijo.secuencia.append(padre2[j])
                 lista_hijos.append(hijo)
         return lista_hijos
 
@@ -235,7 +236,8 @@ class CX(Crossover):
             #Busco ciclos entre los dos padres
             lista_ciclos = self.buscar_ciclos(cromosoma1.secuencia,
             cromosoma2.secuencia)
-            lista_rta = self.generar_hijos(lista_ciclos, cromosoma1, cromosoma2)
+            lista_rta = self.generar_hijos(lista_ciclos, cromosoma1.secuencia,
+            cromosoma2.secuencia)
         # Si los padres son iguales los hijos iguales
         else:
             h1 = Cromosoma(cromosoma1.tamano)
