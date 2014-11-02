@@ -63,19 +63,11 @@ class PBT(Selection):
         super(PBT, self).__init__()
 
     def seleccionar(self, cromosoma1, cromosoma2):
-        probabilidad = random.randint(1, 100)
-        if probabilidad < 66:
-            #Tomo el mejor fitness
-            if cromosoma1.fitness >= cromosoma2.fitness:
-                rta = cromosoma1
-            else:
-                rta = cromosoma2
+        #Tomo el mejor fitness
+        if cromosoma1.fitness >= cromosoma2.fitness:
+            rta = cromosoma1
         else:
-            #Tomo el peor fitness
-            if cromosoma1.fitness >= cromosoma2.fitness:
-                rta = cromosoma2
-            else:
-                rta = cromosoma1
+            rta = cromosoma2
         return rta
 
 
