@@ -3,6 +3,7 @@
 import random
 import copy
 
+
 class Poblacion(object):
     """docstring for Poblacion"""
     cromosomas = []
@@ -22,8 +23,8 @@ class Poblacion(object):
 
     def mostrar(self):
         for c in self.cromosomas:
-            print c.secuencia
-            print c.fitness
+            print (c.secuencia)
+            print (c.fitness)
             print('----------------------')
 
 
@@ -195,7 +196,7 @@ class CX(Crossover):
 
     def generar_hijos(self, lista_ciclos, padre1, padre2):
         lista_hijos = []
-        print "lista ciclos" + str(lista_ciclos)
+        print ("lista ciclos" + str(lista_ciclos))
         if len(lista_ciclos) == 1:
             h1 = Cromosoma(len(padre1))
             h2 = Cromosoma(len(padre1))
@@ -282,8 +283,8 @@ class CX(Crossover):
 
 class Mutation(object):
     """docstring for Mutation"""
-    def __init__(self, arg):
-        self.arg = arg
+    def __init__(self):
+        pass
 
     def mutar():
         pass
@@ -301,9 +302,8 @@ class Invertion(Mutation):
     0 4 3 2 1 5 6 7
 
     """
-    def __init__(self, arg):
+    def __init__(self):
         super(Invertion, self).__init__()
-        self.arg = arg
 
     def mutar(self, cromosoma):
         pos1 = random.randint(0, cromosoma.tamano - 1)
@@ -330,21 +330,20 @@ class Displacement(Mutation):
 
     0 3 4 5 1 2 6 7
     """
-    def __init__(self, arg):
+    def __init__(self):
         super(Displacement, self).__init__()
-        self.arg = arg
 
     def mutar(self, cromosoma):
         pos1 = random.randint(0, cromosoma.tamano - 1)
         pos2 = random.randint(0, cromosoma.tamano - 1)
         if pos1 < pos2:
-            group = cromosoma.secuencia[pos1:pos2]
-            del(cromosoma[pos1:pos2])
+            group = cromosoma.secuencia[pos1:pos2 + 1]
+            del(cromosoma.secuencia[pos1:pos2 + 1])
             randpos = random.randint(0, len(cromosoma.secuencia))
             cromosoma.secuencia.insert(randpos, group)
         if pos2 < pos1:
-            group = cromosoma.secuencia[pos2:pos1]
-            del(cromosoma[pos2:pos1])
+            group = cromosoma.secuencia[pos2:pos1 + 1]
+            del(cromosoma.secuencia[pos2:pos1 + 1])
             randpos = random.randint(0, len(cromosoma.secuencia))
             cromosoma.secuencia.insert(randpos, group)
         cromosoma.secuencia = list(flatten(cromosoma.secuencia))
