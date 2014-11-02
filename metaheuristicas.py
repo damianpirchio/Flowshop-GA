@@ -171,7 +171,6 @@ class CX(Crossover):
                 rta = True
         return rta
 
-
     def armar_ciclo(self, pos, cromosoma1, cromosoma2):
         """Funcion que encuentra el ciclo (en caso de existir )para
         el elemnto de la posicion recibida y agrega ese ciclo a la lista
@@ -180,7 +179,7 @@ class CX(Crossover):
         # Setea el valor inicial para el corte
         inicio_ciclo = cromosoma1[pos]
         ciclo = []
-        i = 0
+        i = pos
         seguir = True
         # Recorre el cromosoma1
         while seguir:
