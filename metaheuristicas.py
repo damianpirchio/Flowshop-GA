@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-
+import copy
 
 class Poblacion(object):
     """docstring for Poblacion"""
@@ -195,23 +195,54 @@ class CX(Crossover):
 
     def generar_hijos(self, lista_ciclos, padre1, padre2):
         lista_hijos = []
+        print "lista ciclos" + str(lista_ciclos)
         if len(lista_ciclos) == 1:
             h1 = Cromosoma(len(padre1))
             h2 = Cromosoma(len(padre1))
             h1.secuencia = padre1
-            h2.secuencia = padre1
+            h2.secuencia = padre2
             lista_hijos.append(h1)
             lista_hijos.append(h2)
         else:
             for i in range(0, 2):
                 ciclo_actual = lista_ciclos[i]
                 hijo = Cromosoma(len(padre1))
+                hijo.secuencia = copy.deepcopy(padre2)
+                #print "hijo secuencia = " + str(hijo.secuencia)
                 for j in range(hijo.tamano):
                     if j in ciclo_actual:
-                        hijo.secuencia.append(padre1[j])
-                    else:
-                        hijo.secuencia.append(padre2[j])
+                        hijo.secuencia[j] = padre1[j]
+
                 lista_hijos.append(hijo)
+            """
+            ciclo1 = lista_ciclos[0]
+            print "ciclo1" + str(ciclo1)
+            ciclo2 = lista_ciclos[1]
+            print "ciclo2" + str(ciclo2)
+            hijo1 = Cromosoma(len(padre1))
+            print "padre2 1 vez: " + str(padre2)
+            hijo1.secuencia = copy.deepcopy(padre2)
+            print "padre2 2 vez: " + str(padre2)
+            print "hijo1 secuencia inicial: " + str(hijo1.secuencia)
+            for j in range(hijo1.tamano):
+                print "padre 2 for 1: " + str(padre2)
+                if j in ciclo1:
+                    hijo1.secuencia[j] = padre1[j]
+
+            hijo2 = Cromosoma(len(padre1))
+            print "padre2 3 vez: " + str(padre2)
+            hijo2.secuencia = copy.deepcopy(padre2)
+            print "padre2 4 vez: " + str(padre2)
+            print "hijo2 secuencia inicial: " + str(hijo2.secuencia)
+            for k in range(hijo2.tamano):
+                if k in ciclo2:
+                    hijo2.secuencia[k] = padre1[k]
+        print "hijo1 secuencia final: " + str(hijo1.secuencia)
+        print "hijo2 secuencia final: " + str(hijo2.secuencia)
+        lista_hijos.append(hijo1.secuencia)
+        lista_hijos.append(hijo2.secuencia)
+        """
+        #print "lista hijos: " + str(lista_hijos)
         return lista_hijos
 
     def buscar_ciclos(self, cromosoma1, cromosoma2):
