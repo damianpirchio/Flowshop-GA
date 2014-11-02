@@ -193,6 +193,26 @@ class CX(Crossover):
                 seguir = False
         return ciclo
 
+    def generar_hijos(self, lista_ciclos, padre1, padre2):
+        if len(lista_ciclos) == 1:
+            h1 = Cromosoma(cromosoma1.tamano)
+            h2 = Cromosoma(cromosoma1.tamano)
+            h1.secuencia = cromosoma1.secuencia
+            h2.secuencia = cromosoma1.secuencia
+            lista_hijos.append(h1)
+            lista_hijos.append(h2)
+        else:
+            for i in range(0,2):
+                ciclo_actual = lista_ciclos[i]
+                hijo = Cromosoma(cromosoma1.tamano)
+                for j in range(len(hijo.tamano)):
+                    if j in ciclo_actual:
+                        hijo.secuencia[j] = padre1[j]
+                    else:
+                        hijo.secuencia[j] = padre2[j]
+                lista_hijos.append(hijo)
+        return lista_hijos
+
     def buscar_ciclos(self, cromosoma1, cromosoma2):
         """ Esta funcion arma una lista de listas donde cada sublista
         esta formada, por las posiciones de los elementos que forman
@@ -206,19 +226,25 @@ class CX(Crossover):
                 if not self.esta_en_lista(i, lista_ciclos):
                     c = self.armar_ciclo(i, cromosoma1, cromosoma2)
                     lista_ciclos.append(c)
+        return lista_ciclos
 
     def cruzar(self, cromosoma1, cromosoma2):
         lista_rta = []
         #Reviso que los padres sean diferentes
         if cromosoma1.secuencia != cromosoma2.secuencia:
             #Busco ciclos entre los dos padres
-            self.buscar_ciclos(cromosoma1, cromosoma2)
+            lista_ciclos = self.buscar_ciclos(cromosoma1.secuencia,
+            cromosoma2.secuencia)
+            lista_rta = self.generar_hijos(lista_ciclos, cromosoma1, cromosoma2)
         # Si los padres son iguales los hijos iguales
         else:
             h1 = Cromosoma(cromosoma1.tamano)
             h2 = Cromosoma(cromosoma1.tamano)
             h1.secuencia = cromosoma1.secuencia
             h2.secuencia = cromosoma1.secuencia
+            lista_rta.append(h1)
+            lista_rta.append(h2)
+        return lista_rta
 
 
 class Mutation(object):
