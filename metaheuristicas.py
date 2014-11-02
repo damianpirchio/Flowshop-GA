@@ -172,27 +172,27 @@ class CX(Crossover):
         return rta
 
 
-def armar_ciclo(self, pos, cromosoma1, cromosoma2):
-    """Funcion que encuentra el ciclo (en caso de existir )para
-    el elemnto de la posicion recibida y agrega ese ciclo a la lista
-    de ciclos"""
+    def armar_ciclo(self, pos, cromosoma1, cromosoma2):
+        """Funcion que encuentra el ciclo (en caso de existir )para
+        el elemnto de la posicion recibida y agrega ese ciclo a la lista
+        de ciclos"""
 
-    # Setea el valor inicial para el corte
-    inicio_ciclo = cromosoma1[pos]
-    ciclo = []
-    i = 0
-    seguir = True
-    # Recorre el cromosoma1
-    while seguir:
-        valor2 = cromosoma2[i]
-        ciclo.append[i]
-        for j in range(len(cromosoma1)):
-            if cromosoma1[j] == valor2:
-                i = j
-        if cromosoma2[i] == inicio_ciclo:
+        # Setea el valor inicial para el corte
+        inicio_ciclo = cromosoma1[pos]
+        ciclo = []
+        i = 0
+        seguir = True
+        # Recorre el cromosoma1
+        while seguir:
+            valor2 = cromosoma2[i]
             ciclo.append(i)
-            seguir = False
-    return ciclo
+            for j in range(len(cromosoma1)):
+                if cromosoma1[j] == valor2:
+                    i = j
+            if cromosoma2[i] == inicio_ciclo:
+                ciclo.append(i)
+                seguir = False
+        return ciclo
 
     def buscar_ciclos(self, cromosoma1, cromosoma2):
         """ Esta funcion arma una lista de listas donde cada sublista
@@ -202,18 +202,11 @@ def armar_ciclo(self, pos, cromosoma1, cromosoma2):
         Donde pncn representa la posición n del ciclo n
         """
         lista_ciclos = []
-        encontro = True
-        while encontro:
-            encontro = False
-            inicio_ciclo = ''
-            #Recorro todo el cromosoma 1
-            for i in range(len(cromosoma1)):
-                inicio_ciclo = cromosoma1[i]
-                ciclo = []
-                # En la misma posicion el otro padre tiene un elemento diferente?
-                if cromosoma1[i] != cromosoma2[i]:
-                    #Algo
-                    pass
+        for i in range(len(cromosoma1)):
+            if cromosoma2[i] != cromosoma1[i]:
+                if not self.esta_en_lista(i, lista_ciclos):
+                    c = self.armar_ciclo(i, cromosoma1, cromosoma2)
+                    lista_ciclos.append(c)
 
     def cruzar(self, cromosoma1, cromosoma2):
         lista_rta = []
