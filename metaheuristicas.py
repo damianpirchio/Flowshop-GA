@@ -138,8 +138,10 @@ class PMX(Crossover):
         #4)Elimino Transitividad de la Lista de Mapeo
         self.eliminar_transitividad(lista_mapeo)
         #5)Reemplazo Final con Lista De Mapeo
-        sec_hijo1 = self.mapear(padre1_secuencia, lista_mapeo, pos_inicial, pos_final)
-        sec_hijo2 = self.mapear(padre2_secuencia, lista_mapeo, pos_inicial, pos_final)
+        sec_hijo1 = self.mapear(padre1_secuencia, lista_mapeo, pos_inicial,
+        pos_final)
+        sec_hijo2 = self.mapear(padre2_secuencia, lista_mapeo, pos_inicial,
+        pos_final)
         #6) Creo 2 hijos y les asigno la secuencia
         h1 = Cromosoma(cromosoma1.tamano)
         h2 = Cromosoma(cromosoma1.tamano)
