@@ -4,7 +4,7 @@
 from metaheuristicas import *
 import sys
 import copy
-
+import time
 
 ## ESQUEMA DE REPRESENTACION
 
@@ -132,7 +132,7 @@ class Problema(object):
             #Agrego los dos hijos a la poblacion de hijos finales
             for i in range(len(hijos)):
                 hijos_finales.append(hijos[i])
-            print(len(hijos_finales))
+            # print(len(hijos_finales))
             padres = []
             hijos = []
         # Termina while, estan creados los hijos finales
@@ -159,7 +159,6 @@ class Problema(object):
         problema = self
         print(sys.argv[1])
         if len(sys.argv) == 2:
-            print("entro")
             problema.datos = problema.parsear(sys.argv[1])
         else:
             print ("\nUsage: python flowshop.py <Taillard problem file>\n")
@@ -167,6 +166,7 @@ class Problema(object):
 
         #-----------  GENERACIÓN POBLACIÓN INICIAL  ----------
         # Genero los primeros padres segun la cristiandad
+        tiempo_anterior = time.time()
 
         adan_y_eva = Poblacion(self.tamano_poblacion)
         adan_y_eva.generar(problema.jobs)
@@ -179,6 +179,8 @@ class Problema(object):
         while self.iteracion < self.max_iterations:
             self.evolucionar()
             self.iteracion += 1
+
+        print("Tiempo total:" + str(time.time() - tiempo_anterior))
 
 if __name__ == "__main__":
     p = Problema()
