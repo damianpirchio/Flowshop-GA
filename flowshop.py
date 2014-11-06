@@ -45,6 +45,14 @@ class Problema(object):
     def __init__(self):
         super(Problema, self).__init__()
 
+    def ordenardatos(self, matrix, width, height):
+        a = [[matrix[row][col] for row in range(0, height)]
+            for col in range(0, width)]
+        return a
+
+    def cmakespan(self, datos):
+        pass
+
     def parsear(self, archivo):
         """ Toma la entrada de Tailard y la transforma en algo
         con el formato lista de listas que podamos utilizar """
@@ -52,7 +60,7 @@ class Problema(object):
         with open(archivo, "r") as f:
 
             lines = map(str.strip, f.readlines())
-            data = [map(int, line.split()) for line in lines]
+            data = [list(map(int, line.split())) for line in lines]
 
         info = data.pop(0)
         self.jobs = info[0]
@@ -60,9 +68,10 @@ class Problema(object):
         self.upper_bound = info[2]
         self.lower_bound = info[3]
 
+        data = self.ordenardatos(data, self.jobs, self.maquinas)
         return data
 
-    def evolucionar():
+    def evolucionar(self):
         padres = []
         hijos = []
         hijos_finales = []
@@ -72,10 +81,10 @@ class Problema(object):
             #-----------  SELECCION -----------
             #Armo una lista con 2 padres(Ver como vaciar la lista)
             for i in range(2):
-                crom1 = self.poblacion_inicial.cromosomas(
-                    random.randint(0, tamano_poblacion - 1))
-                crom2 = self.poblacion_inicial.cromosomas(
-                    random.randint(0, tamano_poblacion - 1))
+                crom1 = self.poblacion_inicial.cromosomas[
+                    random.randint(0, self.tamano_poblacion - 1)]
+                crom2 = self.poblacion_inicial.cromosomas[
+                    random.randint(0, self.tamano_poblacion - 1)]
                 padres.append(dbt.seleccionar(crom1, crom2))
             # Analizo si voy a cruzar o no
             probabilidad_cruce = random.randint(0, 100)
@@ -84,14 +93,19 @@ class Problema(object):
                 #-----------  CROSSOVER  ----------
 
                 # Analizo el método de cruce seteado
+                metodo_crossover = 1
                 if metodo_crossover == 1:
                     # Utilizo PMX
                     crossover = PMX()
-                    hijos.append(crossover.cruzar(padres[0], padres[1]))
+                    childs = crossover.cruzar(padres[0], padres[1])
+                    hijos.append(childs[0])
+                    hijos.append(childs[1])
                 else:
                     # Utilizo CX
                     crossover = CX()
-                    hijos.append(crossover.cruzar(padres[0], padres[1]))
+                    childs = crossover.cruzar(padres[0], padres[1])
+                    hijos.append(childs[0])
+                    hijos.append(childs[1])
 
             else:
                 #No Hacemos CrossOver
@@ -105,6 +119,7 @@ class Problema(object):
                     #-----------  MUTACIÓN  -----------
 
                     # Analizo el método de mutacion seteado
+                    metodo_mutacion = 1
                     if metodo_mutacion == 1:
                         # Utilizo INVERTION
                         mutacion = Invertion()
@@ -117,10 +132,16 @@ class Problema(object):
             #Agrego los dos hijos a la poblacion de hijos finales
             for i in range(len(hijos)):
                 hijos_finales.append(hijos[i])
+            print(len(hijos_finales))
+            padres = []
+            hijos = []
         # Termina while, estan creados los hijos finales
         #-----------  REEMPLAZO  ----------
-        r = Remplazo()
-        lista_final = r.reemplazar(self.poblacion_inicial, hijos_finales)
+
+        r = Reemplazo()
+
+        lista_final = r.reemplazar(self.poblacion_inicial.cromosomas,
+            hijos_finales)
 
         # Creada la poblacion final, de los cuales solo interesa el primer
         # elemento, dado que la lista esta ordenada en forma descendente
@@ -131,31 +152,32 @@ class Problema(object):
             self.best_iteration = self.iteracion
 
         #Finalmente Reasignamos poblacion inicial
-        self.poblacion_inicial = copy.deepcopy(lista_final)
+        self.poblacion_inicial.cromosomas = copy.deepcopy(lista_final)
 
-    def resolver():
+    def resolver(self):
 
         problema = self
-
+        print(sys.argv[1])
         if len(sys.argv) == 2:
+            print("entro")
             problema.datos = problema.parsear(sys.argv[1])
         else:
-            print ("\nUsage: python flow.py <Taillard problem file>\n")
+            print ("\nUsage: python flowshop.py <Taillard problem file>\n")
             sys.exit(0)
 
         #-----------  GENERACIÓN POBLACIÓN INICIAL  ----------
         # Genero los primeros padres segun la cristiandad
 
-        adan_y_eva = Poblacion(tamano_poblacion)
+        adan_y_eva = Poblacion(self.tamano_poblacion)
         adan_y_eva.generar(problema.jobs)
-        adan_y_eva.mostrar()
+        #adan_y_eva.mostrar()
 
         self.poblacion_inicial = adan_y_eva
         #self.padres = Poblacion(tamano_poblacion / 2)
         #self.hijos = Poblacion(tamano_poblacion)
         #self.hijos_mutados = Poblacion(tamano_poblacion)
         while self.iteracion < self.max_iterations:
-            evolucionar()
+            self.evolucionar()
             self.iteracion += 1
 
 if __name__ == "__main__":

@@ -2,7 +2,6 @@
 
 import random
 import copy
-import time
 
 
 class Poblacion(object):
@@ -19,7 +18,7 @@ class Poblacion(object):
         for i in range(self.tamano):
             cromosoma_actual = Cromosoma(tamano_cromosoma)
             cromosoma_actual.generar_secuencia()
-            cromosoma_actual.evaluar_fitness()
+            #cromosoma_actual.evaluar_fitness()
             self.cromosomas.append(cromosoma_actual)
 
     def mostrar(self):
@@ -32,6 +31,7 @@ class Poblacion(object):
 class Cromosoma(object):
     fitness = 0
     secuencia = []
+    tamano = 0
 
     def __init__(self, tamano):
         self.tamano = tamano
@@ -50,16 +50,6 @@ class Cromosoma(object):
         self.secuencia = [i for i in range(0, self.tamano)]
         random.shuffle(self.secuencia)
 
-    def ordenardatos(matrix, width, height):
-        t = time.time()
-        return [[matrix[row][col] for row in range(0, height)]
-            for col in range(0, width)]
-        ta = time.time() - t
-        print ("tiempo tr = " + ta)
-
-#    def cmakespan(self, datos):
-#       T = []
-#       ordenardatos(datos, )
 
 class Selection(object):
     def __init__(self):
@@ -319,7 +309,7 @@ class Invertion(Mutation):
             revlist = cromosoma.secuencia[pos2:pos1 + 1]
             revlist = revlist[::-1]
             cromosoma.secuencia[pos2:pos1 + 1] = revlist
-        return None
+        return cromosoma
 
 
 class Displacement(Mutation):
@@ -350,7 +340,7 @@ class Displacement(Mutation):
             randpos = random.randint(0, len(cromosoma.secuencia))
             cromosoma.secuencia.insert(randpos, group)
         cromosoma.secuencia = list(flatten(cromosoma.secuencia))
-        return None
+        return cromosoma
 
 
 def flatten(*args):
