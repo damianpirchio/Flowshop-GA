@@ -2,6 +2,7 @@
 
 import random
 import copy
+import time
 
 
 class Poblacion(object):
@@ -35,9 +36,6 @@ class Cromosoma(object):
     def __init__(self, tamano):
         self.tamano = tamano
 
-    def evaluar_fitness(self):
-        self.fitness = random.randint(1, 100)
-
     def evaluar_fitness2(self, datos):
         lista = self.secuencia
         resu = 0
@@ -52,6 +50,16 @@ class Cromosoma(object):
         self.secuencia = [i for i in range(0, self.tamano)]
         random.shuffle(self.secuencia)
 
+    def ordenardatos(matrix, width, height):
+        t = time.time()
+        return [[matrix[row][col] for row in range(0, height)]
+            for col in range(0, width)]
+        ta = time.time() - t
+        print ("tiempo tr = " + ta)
+
+#    def cmakespan(self, datos):
+#       T = []
+#       ordenardatos(datos, )
 
 class Selection(object):
     def __init__(self):
