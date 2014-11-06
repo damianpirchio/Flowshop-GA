@@ -58,10 +58,11 @@ class Selection(object):
         pass
 
 
-class PBT(Selection):
-    """docstring for Probabilistic Binary Tournament"""
+class DBT(Selection):
+    """docstring for Deterministic Binary Tournament
+        Dados dos cromosomas devuelve el de mejor fitness"""
     def __init__(self):
-        super(PBT, self).__init__()
+        super(DBT, self).__init__()
 
     def seleccionar(self, cromosoma1, cromosoma2):
         #Tomo el mejor fitness
@@ -351,3 +352,18 @@ def flatten(*args):
                 yield y
         else:
             yield x
+
+
+class Reemplazo():
+
+    def __init__(self):
+        super(Reemplazo, self).__init__()
+
+    def reemplazar(self, poblacion1, poblacion2):
+        #Junto Listas
+        poblacion_rta = poblacion1 + poblacion2
+        # Ordeno por fitness de manera descendente
+        poblacion_rta.sort(key=lambda x: x.fitness, reverse=True)
+        # Elimino la parte que no me interesa quedandome con los mejores
+        del poblacion_rta[len(poblacion_rta) // 2:]
+        return poblacion_rta

@@ -3,6 +3,8 @@
 #from ..geneticos import metaheuristicas
 from metaheuristicas import *
 import sys
+import copy
+
 
 ## ESQUEMA DE REPRESENTACION
 
@@ -33,13 +35,12 @@ class Problema(object):
     upper_bound = 0
     lower_bound = 0
     max_iterations = 500
-
     tamano_poblacion = 128
+    iteracion = 0
+    best_makespan = 999999
+    best_iteration = 0
 
-    seleccion = None
-    padres = None
-    hijos = None
-    hijos_mutados = None
+    poblacion_inicial = []
 
     def __init__(self):
         super(Problema, self).__init__()
@@ -62,27 +63,75 @@ class Problema(object):
         return data
 
     def evolucionar():
-        #-----------  SELECCION -----------
-        pbt = PBT()
-        for i in range(tamano_poblacion / 2):
-            crom1 = self.seleccion.cromosomas(
-                random.randint(0, tamano_poblacion - 1))
-            crom2 = self.seleccion.cromosomas(
-                random.randint(0, tamano_poblacion - 1))
-            self.padres[i] = pbt.seleccionar(crom1, crom2)  # Cromosoma
+        padres = []
+        hijos = []
+        hijos_finales = []
+        lista_final = []
+        dbt = DBT()
+        while len(hijos_finales) < 128:
+            #-----------  SELECCION -----------
+            #Armo una lista con 2 padres(Ver como vaciar la lista)
+            for i in range(2):
+                crom1 = self.poblacion_inicial.cromosomas(
+                    random.randint(0, tamano_poblacion - 1))
+                crom2 = self.poblacion_inicial.cromosomas(
+                    random.randint(0, tamano_poblacion - 1))
+                padres.append(dbt.seleccionar(crom1, crom2))
+            # Analizo si voy a cruzar o no
+            probabilidad_cruce = random.randint(0, 100)
+            if probabilidad_cruce >= 35:
 
-        #-----------  CROSSOVER  ----------
-        pmx = PMX()
-        for i in range(tamano_poblacion / 2):
-            crom1 = self.padres.cromosomas(
-                random.randint(0, (tamano_poblacion // 2) - 1))
-            crom2 = self.padres.cromosomas(
-                random.randint(0, (tamano_poblacion // 2) - 1))
-            self.hijos[i] = pmx.cruzar(crom1, crom2)
-        #-----------  MUTACIÓN  -----------
+                #-----------  CROSSOVER  ----------
 
+                # Analizo el método de cruce seteado
+                if metodo_crossover == 1:
+                    # Utilizo PMX
+                    crossover = PMX()
+                    hijos.append(crossover.cruzar(padres[0], padres[1]))
+                else:
+                    # Utilizo CX
+                    crossover = CX()
+                    hijos.append(crossover.cruzar(padres[0], padres[1]))
+
+            else:
+                #No Hacemos CrossOver
+                hijos = copy.deepcopy(padres)
+
+            # Vamos a contemplar que los padres pueden mutar
+            # Analizo si voy mutar o no cada uno de los hijos
+            for i in range(len(hijos)):
+                probabilidad_mutacion = random.random()
+                if probabilidad_mutacion <= (1 / self.jobs):
+                    #-----------  MUTACIÓN  -----------
+
+                    # Analizo el método de mutacion seteado
+                    if metodo_mutacion == 1:
+                        # Utilizo INVERTION
+                        mutacion = Invertion()
+                        # SE PUEDE HACER ESTA ASIGNACION ?
+                        hijos[i] = mutacion.mutar(hijos[i])
+                    else:
+                        # Utilizo DISPLACEMENT
+                        mutacion = Displacement()
+                        hijos[i] = mutacion.mutar(hijos[i])
+            #Agrego los dos hijos a la poblacion de hijos finales
+            for i in range(len(hijos)):
+                hijos_finales.append(hijos[i])
+        # Termina while, estan creados los hijos finales
         #-----------  REEMPLAZO  ----------
-        pass
+        r = Remplazo()
+        lista_final = r.reemplazar(self.poblacion_inicial, hijos_finales)
+
+        # Creada la poblacion final, de los cuales solo interesa el primer
+        # elemento, dado que la lista esta ordenada en forma descendente
+
+        # Comparamos con el makespan actual
+        if lista_final[0].fitness < self.best_makespan:
+            self.best_makespan = lista_final[0].fitness
+            self.best_iteration = self.iteracion
+
+        #Finalmente Reasignamos poblacion inicial
+        self.poblacion_inicial = copy.deepcopy(lista_final)
 
     def resolver():
 
@@ -91,24 +140,23 @@ class Problema(object):
         if len(sys.argv) == 2:
             problema.datos = problema.parsear(sys.argv[1])
         else:
-            print "\nUsage: python flow.py <Taillard problem file>\n"
+            print ("\nUsage: python flow.py <Taillard problem file>\n")
             sys.exit(0)
 
         #-----------  GENERACIÓN POBLACIÓN INICIAL  ----------
+        # Genero los primeros padres segun la cristiandad
 
-        poblacion_inicial = Poblacion(tamano_poblacion)
-        poblacion_inicial.generar(problema.jobs)
-        poblacion_inicial.mostrar()
+        adan_y_eva = Poblacion(tamano_poblacion)
+        adan_y_eva.generar(problema.jobs)
+        adan_y_eva.mostrar()
 
-        self.seleccion = poblacion_inicial
-        self.padres = Poblacion(tamano_poblacion / 2)
-        self.hijos = Poblacion(tamano_poblacion)
-        self.hijos_mutados = Poblacion(tamano_poblacion)
-
-        iteracion = 0
-        while iteracion < max_iterations:
+        self.poblacion_inicial = adan_y_eva
+        #self.padres = Poblacion(tamano_poblacion / 2)
+        #self.hijos = Poblacion(tamano_poblacion)
+        #self.hijos_mutados = Poblacion(tamano_poblacion)
+        while self.iteracion < self.max_iterations:
             evolucionar()
-            iteracion += 1
+            self.iteracion += 1
 
 if __name__ == "__main__":
     p = Problema()
