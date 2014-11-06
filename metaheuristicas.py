@@ -352,7 +352,7 @@ def flatten(*args):
             yield x
 
 
-class Reemplazo():
+class Reemplazo(object):
 
     def __init__(self):
         super(Reemplazo, self).__init__()
