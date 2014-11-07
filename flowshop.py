@@ -54,7 +54,20 @@ class Problema(object):
         return a
 
     def cmakespan(self, datos):
-        pass
+        t = []
+        for j, job in enumerate(datos):
+            #print(j, job)
+            for m, maquina in enumerate(job):
+                #print(m, maquina)
+                if m == 1:
+                    t[m] = t[m] + datos[j][m]
+                else:
+                    if t[m - 1] > t[m]:
+                        t[m] = t[m - 1] + datos[j][m]
+                    else:
+                        t[m] = t[m] + datos[j][m]
+        # I <3 PYTHON
+        return t[-1]
 
     def parsear(self, archivo):
         """ Toma la entrada de Tailard y la transforma en algo
