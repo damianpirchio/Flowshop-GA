@@ -39,6 +39,9 @@ class Problema(object):
     iteracion = 0
     best_makespan = 999999
     best_iteration = 0
+    best_makespan_time = 0
+    tiempo_ejecucion = 0
+    tiempo_inicial = 0
 
     poblacion_inicial = []
 
@@ -150,14 +153,29 @@ class Problema(object):
         if lista_final[0].fitness < self.best_makespan:
             self.best_makespan = lista_final[0].fitness
             self.best_iteration = self.iteracion
+            self.best_makespan_time = time.time() - self.tiempo_inicial
 
         #Finalmente Reasignamos poblacion inicial
         self.poblacion_inicial.cromosomas = copy.deepcopy(lista_final)
 
+    def mostrar_solucion(self):
+        print(("Mejor costo:" + str(self.best_makespan)))
+        costo_total = 0
+        tamano = self.poblacion_inicial.tamano
+        for i in range(tamano):
+            costo_total = costo_total + \
+            self.poblacion_inicial.cromosomas[i].fitness
+        costo_promedio = costo_total / tamano
+        print(("Costo Promedio: " + str(costo_promedio)))
+        print(("Tiempo Mejor Costo: " + str(self.best_makespan_time)))
+        print(("Tiempo Total Ejecucion: " + str(self.tiempo_ejecucion)))
+        print(("Mejor Iteracion: " + str(self.best_iteration)))
+        print(("Total Iteracion: " + str(self.max_iterations)))
+
     def resolver(self):
 
         problema = self
-        print(sys.argv[1])
+        print((sys.argv[1]))
         if len(sys.argv) == 2:
             problema.datos = problema.parsear(sys.argv[1])
         else:
@@ -166,7 +184,7 @@ class Problema(object):
 
         #-----------  GENERACIÓN POBLACIÓN INICIAL  ----------
         # Genero los primeros padres segun la cristiandad
-        tiempo_anterior = time.time()
+        self.tiempo_inicial = time.time()
 
         adan_y_eva = Poblacion(self.tamano_poblacion)
         adan_y_eva.generar(problema.jobs)
@@ -180,8 +198,10 @@ class Problema(object):
             self.evolucionar()
             self.iteracion += 1
 
-        print("Tiempo total:" + str(time.time() - tiempo_anterior))
+        self.tiempo_ejecucion = time.time() - self.tiempo_inicial
+
 
 if __name__ == "__main__":
     p = Problema()
     p.resolver()
+    p.mostrar_solucion()
