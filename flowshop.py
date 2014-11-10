@@ -34,7 +34,7 @@ class Problema(object):
     maquinas = 0
     upper_bound = 0
     lower_bound = 0
-    max_iterations = 500
+    max_iterations = 10
     tamano_poblacion = 128
     iteracion = 0
     best_makespan = 999999
@@ -145,6 +145,10 @@ class Problema(object):
             #Agrego los dos hijos a la poblacion de hijos finales
             for i in range(len(hijos)):
                 hijos_finales.append(hijos[i])
+                hijos_finales[i].fitness = self.cmakespan(self.datos,
+                    hijos_finales[i].secuencia)
+                # print(hijos_finales[i].secuencia)
+
             # print(len(hijos_finales))
             padres = []
             hijos = []
@@ -180,7 +184,7 @@ class Problema(object):
         print(("Tiempo Mejor Costo: " + str(self.best_makespan_time)))
         print(("Tiempo Total Ejecucion: " + str(self.tiempo_ejecucion)))
         print(("Mejor Iteracion: " + str(self.best_iteration)))
-        print(("Total Iteracion: " + str(self.max_iterations)))
+        print(("Total Iteraciones: " + str(self.max_iterations)))
 
     def resolver(self):
 
@@ -198,8 +202,10 @@ class Problema(object):
 
         adan_y_eva = Poblacion(self.tamano_poblacion)
         adan_y_eva.generar(problema.jobs)
+        for crom in adan_y_eva.cromosomas:
+            crom.fitness = self.cmakespan(self.datos, crom.secuencia)
         #adan_y_eva.mostrar()
-
+        print ("Fitness")
         self.poblacion_inicial = adan_y_eva
         #self.padres = Poblacion(tamano_poblacion / 2)
         #self.hijos = Poblacion(tamano_poblacion)

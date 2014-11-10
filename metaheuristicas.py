@@ -36,16 +36,6 @@ class Cromosoma(object):
     def __init__(self, tamano):
         self.tamano = tamano
 
-    def evaluar_fitness2(self, datos):
-        lista = self.secuencia
-        resu = 0
-        while len(lista) > 0:
-            job = lista[0]
-            for sub_lista in datos:
-                resu = resu + datos[sub_lista[job]]
-            lista.remove(job)
-        self.fitness = resu
-
     def generar_secuencia(self):
         self.secuencia = [i for i in range(0, self.tamano)]
         random.shuffle(self.secuencia)
@@ -359,6 +349,16 @@ class Reemplazo(object):
 
     def reemplazar(self, poblacion1, poblacion2):
         #Junto Listas
+        """
+        print("poblacion vieja")
+        for crom in poblacion1:
+            print(crom.secuencia)
+            print(crom.fitness)
+        print("poblacion nueva")
+        for crom in poblacion2:
+            print(crom.secuencia)
+            print(crom.fitness)
+        """
         poblacion_rta = poblacion1 + poblacion2
         # Ordeno por fitness de manera descendente
         poblacion_rta.sort(key=lambda x: x.fitness, reverse=True)
