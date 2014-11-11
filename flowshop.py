@@ -34,7 +34,7 @@ class Problema(object):
     maquinas = 0
     upper_bound = 0
     lower_bound = 0
-    max_iterations = 10
+    max_iterations = 500
     tamano_poblacion = 128
     iteracion = 0
     best_makespan = 999999
@@ -145,8 +145,6 @@ class Problema(object):
             #Agrego los dos hijos a la poblacion de hijos finales
             for i in range(len(hijos)):
                 hijos_finales.append(hijos[i])
-                hijos_finales[i].fitness = self.cmakespan(self.datos,
-                    hijos_finales[i].secuencia)
                 # print(hijos_finales[i].secuencia)
 
             # print(len(hijos_finales))
@@ -154,7 +152,12 @@ class Problema(object):
             hijos = []
         # Termina while, estan creados los hijos finales
         #-----------  REEMPLAZO  ----------
-
+        for elem in hijos_finales:
+            elem.fitness = self.cmakespan(self.datos,
+                    elem.secuencia)
+            # print (elem.secuencia)
+            # print (elem.fitness)
+            # print ("*" *20)
         r = Reemplazo()
 
         lista_final = r.reemplazar(self.poblacion_inicial.cromosomas,
@@ -204,8 +207,8 @@ class Problema(object):
         adan_y_eva.generar(problema.jobs)
         for crom in adan_y_eva.cromosomas:
             crom.fitness = self.cmakespan(self.datos, crom.secuencia)
+
         #adan_y_eva.mostrar()
-        print ("Fitness")
         self.poblacion_inicial = adan_y_eva
         #self.padres = Poblacion(tamano_poblacion / 2)
         #self.hijos = Poblacion(tamano_poblacion)

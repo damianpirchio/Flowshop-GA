@@ -349,19 +349,10 @@ class Reemplazo(object):
 
     def reemplazar(self, poblacion1, poblacion2):
         #Junto Listas
-        """
-        print("poblacion vieja")
-        for crom in poblacion1:
-            print(crom.secuencia)
-            print(crom.fitness)
-        print("poblacion nueva")
-        for crom in poblacion2:
-            print(crom.secuencia)
-            print(crom.fitness)
-        """
         poblacion_rta = poblacion1 + poblacion2
         # Ordeno por fitness de manera descendente
-        poblacion_rta.sort(key=lambda x: x.fitness, reverse=True)
+        poblacion_rta.sort(key=lambda x: x.fitness, reverse=False)
         # Elimino la parte que no me interesa quedandome con los mejores
         del poblacion_rta[len(poblacion_rta) // 2:]
+
         return poblacion_rta
