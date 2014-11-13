@@ -123,7 +123,11 @@ class PMX(Crossover):
         #3)Armo Lista de Mapeo con los substrings
         lista_mapeo = []
         for i in range(len(substring1)):
+            #print("Subs 1: ", substring1 )
+            #print("Subs 2: ", substring2 )
             lista_mapeo.append([substring1[i], substring2[i]])
+            #print("Lista Mapeo: ", lista_mapeo)
+            #lista_mapeo = list(flatten(lista_mapeo))
         #4)Elimino Transitividad de la Lista de Mapeo
         self.eliminar_transitividad(lista_mapeo)
         #5)Reemplazo Final con Lista De Mapeo

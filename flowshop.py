@@ -135,12 +135,16 @@ class Problema(object):
                     if metodo_mutacion == 1:
                         # Utilizo INVERTION
                         mutacion = Invertion()
+
                         # SE PUEDE HACER ESTA ASIGNACION ?
                         hijos[i] = mutacion.mutar(hijos[i])
+
                     else:
                         # Utilizo DISPLACEMENT
                         mutacion = Displacement()
+                        #print (("Sec antes de mutar: ", hijos[i].secuencia))
                         hijos[i] = mutacion.mutar(hijos[i])
+                        #print (("Sec desp de mutar: ", hijos[i].secuencia))
             #Agrego los dos hijos a la poblacion de hijos finales
             for i in range(len(hijos)):
                 hijos_finales.append(hijos[i])
@@ -152,6 +156,7 @@ class Problema(object):
         # Termina while, estan creados los hijos finales
         #-----------  REEMPLAZO  ----------
         for elem in hijos_finales:
+            #print("Antes mp: ", elem.secuencia)
             elem.fitness = self.cmakespan(self.datos,
                     elem.secuencia)
             # print (elem.secuencia)
