@@ -128,7 +128,7 @@ class Problema(object):
             # Analizo si voy mutar o no cada uno de los hijos
             for i in range(len(hijos)):
                 probabilidad_mutacion = random.random()
-                if probabilidad_mutacion <= ((1.0 / self.jobs )):
+                if probabilidad_mutacion <= ((1.0 / self.jobs)):
                     #-----------  MUTACIÓN  -----------
                     # Analizo el método de mutacion seteado
                     metodo_mutacion = 1
