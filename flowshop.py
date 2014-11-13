@@ -106,7 +106,7 @@ class Problema(object):
                 #-----------  CROSSOVER  ----------
 
                 # Analizo el método de cruce seteado
-                metodo_crossover = 1
+                metodo_crossover = 2
                 if metodo_crossover == 1:
                     # Utilizo PMX
                     crossover = PMX()
@@ -128,9 +128,8 @@ class Problema(object):
             # Analizo si voy mutar o no cada uno de los hijos
             for i in range(len(hijos)):
                 probabilidad_mutacion = random.random()
-                if probabilidad_mutacion <= (1 / self.jobs):
+                if probabilidad_mutacion <= ((1.0 / self.jobs )):
                     #-----------  MUTACIÓN  -----------
-
                     # Analizo el método de mutacion seteado
                     metodo_mutacion = 1
                     if metodo_mutacion == 1:

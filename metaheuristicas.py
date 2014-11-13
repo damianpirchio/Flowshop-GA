@@ -155,48 +155,52 @@ class CX(Crossover):
                 rta = True
         return rta
 
-    def armar_ciclo(self, pos, cromosoma1, cromosoma2):
+    def armar_ciclo(self, pos, secuencia1, secuencia2):
         """Funcion que encuentra el ciclo (en caso de existir )para
         el elemnto de la posicion recibida y agrega ese ciclo a la lista
         de ciclos"""
 
         # Setea el valor inicial para el corte
-        inicio_ciclo = cromosoma1[pos]
+        inicio_ciclo = secuencia1[pos]
         ciclo = []
         i = pos
         seguir = True
-        # Recorre el cromosoma1
+        # Recorre la secuencia1
         while seguir:
-            valor2 = cromosoma2[i]
+            valor2 = secuencia2[i]
             ciclo.append(i)
-            for j in range(len(cromosoma1)):
-                if cromosoma1[j] == valor2:
+            for j in range(len(secuencia1)):
+                if secuencia1[j] == valor2:
                     i = j
-            if cromosoma2[i] == inicio_ciclo:
+            if secuencia2[i] == inicio_ciclo:
                 ciclo.append(i)
                 seguir = False
         return ciclo
 
     def generar_hijos(self, lista_ciclos, padre1, padre2):
         lista_hijos = []
-        print ("lista ciclos" + str(lista_ciclos))
+        #print ("lista ciclos" + str(lista_ciclos))
         if len(lista_ciclos) == 1:
             h1 = Cromosoma(len(padre1))
             h2 = Cromosoma(len(padre1))
-            h1.secuencia = padre1
-            h2.secuencia = padre2
+            h1.secuencia = copy.deepcopy(padre1)
+            h2.secuencia = copy.deepcopy(padre2)
             lista_hijos.append(h1)
             lista_hijos.append(h2)
         else:
             for i in range(0, 2):
                 ciclo_actual = lista_ciclos[i]
                 hijo = Cromosoma(len(padre1))
-                hijo.secuencia = copy.deepcopy(padre2)
-                #print "hijo secuencia = " + str(hijo.secuencia)
+                if i == 0:
+                    hijo.secuencia = copy.deepcopy(padre2)
+                else:
+                    hijo.secuencia = copy.deepcopy(padre1)
                 for j in range(hijo.tamano):
                     if j in ciclo_actual:
-                        hijo.secuencia[j] = padre1[j]
-
+                        if i == 0:
+                            hijo.secuencia[j] = padre1[j]
+                        else:
+                            hijo.secuencia[j] = padre2[j]
                 lista_hijos.append(hijo)
             """
             ciclo1 = lista_ciclos[0]
@@ -229,7 +233,7 @@ class CX(Crossover):
         #print "lista hijos: " + str(lista_hijos)
         return lista_hijos
 
-    def buscar_ciclos(self, cromosoma1, cromosoma2):
+    def buscar_ciclos(self, secuencia1, secuencia2):
         """ Esta funcion arma una lista de listas donde cada sublista
         esta formada, por las posiciones de los elementos que forman
         parte de un ciclo.De esta manera obtendremos:
@@ -237,10 +241,11 @@ class CX(Crossover):
         Donde pncn representa la posición n del ciclo n
         """
         lista_ciclos = []
-        for i in range(len(cromosoma1)):
-            if cromosoma2[i] != cromosoma1[i]:
+        for i in range(len(secuencia1)):
+            # Revisamos que dos elementos en la misma posicion sean !=
+            if secuencia2[i] != secuencia1[i]:
                 if not self.esta_en_lista(i, lista_ciclos):
-                    c = self.armar_ciclo(i, cromosoma1, cromosoma2)
+                    c = self.armar_ciclo(i, secuencia1, secuencia2)
                     lista_ciclos.append(c)
         return lista_ciclos
 
