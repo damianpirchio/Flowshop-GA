@@ -104,12 +104,7 @@ class Problema(object):
             if probabilidad_cruce >= 35:
 
                 #-----------  CROSSOVER  ----------
-
                 # Analizo el método de cruce seteado
-<<<<<<< HEAD
-                metodo_crossover = 2
-=======
->>>>>>> bf28a0e1a8d2fe790462a3ded514fb28e623a87f
                 if metodo_crossover == 1:
                     # Utilizo PMX
                     crossover = PMX()
