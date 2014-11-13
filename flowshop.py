@@ -84,7 +84,7 @@ class Problema(object):
         data = self.ordenardatos(data, self.jobs, self.maquinas)
         return data
 
-    def evolucionar(self):
+    def evolucionar(self, metodo_crossover, metodo_mutacion):
         padres = []
         hijos = []
         hijos_finales = []
@@ -106,7 +106,10 @@ class Problema(object):
                 #-----------  CROSSOVER  ----------
 
                 # Analizo el método de cruce seteado
+<<<<<<< HEAD
                 metodo_crossover = 2
+=======
+>>>>>>> bf28a0e1a8d2fe790462a3ded514fb28e623a87f
                 if metodo_crossover == 1:
                     # Utilizo PMX
                     crossover = PMX()
@@ -131,7 +134,6 @@ class Problema(object):
                 if probabilidad_mutacion <= ((1.0 / self.jobs)):
                     #-----------  MUTACIÓN  -----------
                     # Analizo el método de mutacion seteado
-                    metodo_mutacion = 1
                     if metodo_mutacion == 1:
                         # Utilizo INVERTION
                         mutacion = Invertion()
@@ -193,8 +195,8 @@ class Problema(object):
         print(("Mejor Iteracion: " + str(self.best_iteration)))
         print(("Total Iteraciones: " + str(self.max_iterations)))
 
-    def resolver(self):
-
+    def resolver(self, metodo_crossover, metodo_mutacion, iterations=500):
+        self.max_iterations = iterations
         problema = self
         print((sys.argv[1]))
         if len(sys.argv) == 2:
@@ -218,13 +220,68 @@ class Problema(object):
         #self.hijos = Poblacion(tamano_poblacion)
         #self.hijos_mutados = Poblacion(tamano_poblacion)
         while self.iteracion < self.max_iterations:
-            self.evolucionar()
+            self.evolucionar(metodo_crossover, metodo_mutacion)
             self.iteracion += 1
 
         self.tiempo_ejecucion = time.time() - self.tiempo_inicial
 
+    def grabar_solucion(self):
+        # Mejor costo
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("{}\t".format(self.best_makespan))
+        costo_total = 0
+        tamano = self.poblacion_inicial.tamano
+        for i in range(tamano):
+            costo_total = costo_total + \
+            self.poblacion_inicial.cromosomas[i].fitness
+        costo_promedio = costo_total / tamano
+
+        with open("Resultados.txt", "a") as text_file:
+            # Costo promedio
+            text_file.write("{}\t".format(costo_promedio))
+            text_file.write("{}\t".format(self.best_makespan_time))
+            text_file.write("{}\t".format(self.tiempo_ejecucion))
+            text_file.write("{}\t".format(self.best_iteration))
+            text_file.write("{}\n".format(self.max_iterations))
+
+    def resolverTodos(self, cant_ejecuciones, iterations=500):
+        #PMX e INVERTION
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("{}\n".format("***** PMX e INVERTION *****"))
+        for i in range(cant_ejecuciones):
+            self.resolver(1, 1, iterations)
+            self.grabar_solucion()
+            self = Problema()
+        """
+        #PMX y DISPLACEMENT
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("{}\n".format("***** PMX y DISPLACEMENT *****"))
+        for i in range(cant_ejecuciones):
+            self.resolver(1, 0, iterations)
+            self.grabar_solucion()
+            self = Problema()
+        #CX e INVERTION
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("{}\n".format("***** CX e INVERTION *****"))
+        for i in range(cant_ejecuciones):
+            self.resolver(0, 1, iterations)
+            self.grabar_solucion()
+            self = Problema()
+        #CX y DISPLACEMENT
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("{}\n".format("***** CX y DISPLACEMENT *****"))
+        for i in range(cant_ejecuciones):
+            self.resolver(0, 0, iterations)
+            self.grabar_solucion()
+            self = Problema()
+        """
+        print("\a")
+
+    def resolverUno(self, cross, mut, iterations=500):
+        self.resolver(cross, mut, iterations)
+        self.grabar_solucion()
 
 if __name__ == "__main__":
     p = Problema()
-    p.resolver()
+    p.resolverTodos(30, 500)
     p.mostrar_solucion()
