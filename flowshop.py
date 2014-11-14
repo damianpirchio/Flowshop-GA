@@ -5,7 +5,6 @@ from metaheuristicas import *
 import sys
 import copy
 import time
-
 ## ESQUEMA DE REPRESENTACION
 
 """ 3 maquinas y 3 trabajos
@@ -92,17 +91,22 @@ class Problema(object):
         dbt = DBT()
         while len(hijos_finales) < 128:
             #-----------  SELECCION -----------
-            #Armo una lista con 2 padres(Ver como vaciar la lista)
+            #Armo una lista con 2 padres
             for i in range(2):
                 crom1 = self.poblacion_inicial.cromosomas[
                     random.randint(0, self.tamano_poblacion - 1)]
                 crom2 = self.poblacion_inicial.cromosomas[
                     random.randint(0, self.tamano_poblacion - 1)]
                 padres.append(dbt.seleccionar(crom1, crom2))
+            if any(isinstance(el, list) for el in padres[0].secuencia):
+                print("Error de Binary Tournament")
+                print(self.iteracion)
+            if any(isinstance(el, list) for el in padres[1].secuencia):
+                print("Error de Binary Tournament")
+                print(self.iteracion)
             # Analizo si voy a cruzar o no
             probabilidad_cruce = random.randint(0, 100)
             if probabilidad_cruce >= 35:
-
                 #-----------  CROSSOVER  ----------
                 # Analizo el método de cruce seteado
                 if metodo_crossover == 1:
@@ -121,9 +125,15 @@ class Problema(object):
             else:
                 #No Hacemos CrossOver
                 hijos = copy.deepcopy(padres)
+            if any(isinstance(el, list) for el in hijos[0].secuencia):
+                print("Error de PMX0")
+
+            if any(isinstance(el, list) for el in hijos[1].secuencia):
+                print("Error de PMX1")
 
             # Vamos a contemplar que los padres pueden mutar
             # Analizo si voy mutar o no cada uno de los hijos
+            i = 0
             for i in range(len(hijos)):
                 probabilidad_mutacion = random.random()
                 if probabilidad_mutacion <= ((1.0 / self.jobs)):
@@ -142,12 +152,16 @@ class Problema(object):
                         #print (("Sec antes de mutar: ", hijos[i].secuencia))
                         hijos[i] = mutacion.mutar(hijos[i])
                         #print (("Sec desp de mutar: ", hijos[i].secuencia))
+
             #Agrego los dos hijos a la poblacion de hijos finales
+            i = 0
             for i in range(len(hijos)):
                 hijos_finales.append(hijos[i])
                 # print(hijos_finales[i].secuencia)
-
-            # print(len(hijos_finales))
+            if any(isinstance(el, list) for el in hijos_finales[0].secuencia):
+                print("Error previo reemplazo")
+            if any(isinstance(el, list) for el in hijos_finales[1].secuencia):
+                print("Error previo reemplazo")
             padres = []
             hijos = []
         # Termina while, estan creados los hijos finales
@@ -156,14 +170,18 @@ class Problema(object):
             #print("Antes mp: ", elem.secuencia)
             elem.fitness = self.cmakespan(self.datos,
                     elem.secuencia)
-            # print (elem.secuencia)
-            # print (elem.fitness)
-            # print ("*" *20)
         r = Reemplazo()
+
+        if any(isinstance(el, list) for el in hijos_finales[0].secuencia):
+                print("Error inm previo reemplazo")
+        if any(isinstance(el, list) for el in hijos_finales[1].secuencia):
+                print("Error inm previo reemplazo")
 
         lista_final = r.reemplazar(self.poblacion_inicial.cromosomas,
             hijos_finales)
-
+        for i in range(128):
+            if any(isinstance(el, list) for el in lista_final[i].secuencia):
+                    print("Error post reemplazo")
         # Creada la poblacion final, de los cuales solo interesa el primer
         # elemento, dado que la lista esta ordenada en forma descendente
 
@@ -210,7 +228,7 @@ class Problema(object):
             crom.fitness = self.cmakespan(self.datos, crom.secuencia)
 
         #adan_y_eva.mostrar()
-        self.poblacion_inicial = adan_y_eva
+        self.poblacion_inicial = copy.deepcopy(adan_y_eva)
         #self.padres = Poblacion(tamano_poblacion / 2)
         #self.hijos = Poblacion(tamano_poblacion)
         #self.hijos_mutados = Poblacion(tamano_poblacion)
@@ -278,5 +296,6 @@ class Problema(object):
 
 if __name__ == "__main__":
     p = Problema()
-    p.resolverTodos(30, 500)
+    #p.resolverTodos(30, 500)
+    p.resolverUno(1, 0)
     p.mostrar_solucion()

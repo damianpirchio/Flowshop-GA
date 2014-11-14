@@ -54,6 +54,7 @@ class DBT(Selection):
 
     def seleccionar(self, cromosoma1, cromosoma2):
         #Tomo el mejor fitness
+        rta = None
         if cromosoma1.fitness >= cromosoma2.fitness:
             rta = cromosoma1
         else:
