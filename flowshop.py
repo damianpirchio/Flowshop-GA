@@ -24,7 +24,6 @@ datos = [[14, 23, 34], [16, 12, 10], [23, 7, 29]]
 
 """
 
-
 class Problema(object):
     """docstring for Problema"""
 
@@ -90,7 +89,7 @@ class Problema(object):
         hijos_finales = []
         lista_final = []
         dbt = DBT()
-        while len(hijos_finales) < 128:
+        while len(hijos_finales) < self.tamano_poblacion:
             #-----------  SELECCION -----------
             #Armo una lista con 2 padres
             for i in range(2):
@@ -99,12 +98,6 @@ class Problema(object):
                 crom2 = self.poblacion_inicial.cromosomas[
                     random.randint(0, self.tamano_poblacion - 1)]
                 padres.append(dbt.seleccionar(crom1, crom2))
-            if any(isinstance(el, list) for el in padres[0].secuencia):
-                print("Error de Binary Tournament")
-                print(self.iteracion)
-            if any(isinstance(el, list) for el in padres[1].secuencia):
-                print("Error de Binary Tournament")
-                print(self.iteracion)
             # Analizo si voy a cruzar o no
             probabilidad_cruce = random.randint(0, 100)
             if probabilidad_cruce >= 35:
@@ -126,11 +119,6 @@ class Problema(object):
             else:
                 #No Hacemos CrossOver
                 hijos = copy.deepcopy(padres)
-            if any(isinstance(el, list) for el in hijos[0].secuencia):
-                print("Error de PMX0")
-
-            if any(isinstance(el, list) for el in hijos[1].secuencia):
-                print("Error de PMX1")
 
             # Vamos a contemplar que los padres pueden mutar
             # Analizo si voy mutar o no cada uno de los hijos
@@ -159,10 +147,6 @@ class Problema(object):
             for i in range(len(hijos)):
                 hijos_finales.append(hijos[i])
                 # print(hijos_finales[i].secuencia)
-            if any(isinstance(el, list) for el in hijos_finales[0].secuencia):
-                print("Error previo reemplazo")
-            if any(isinstance(el, list) for el in hijos_finales[1].secuencia):
-                print("Error previo reemplazo")
             padres = []
             hijos = []
         # Termina while, estan creados los hijos finales
@@ -173,16 +157,9 @@ class Problema(object):
                     elem.secuencia)
         r = Reemplazo()
 
-        if any(isinstance(el, list) for el in hijos_finales[0].secuencia):
-                print("Error inm previo reemplazo")
-        if any(isinstance(el, list) for el in hijos_finales[1].secuencia):
-                print("Error inm previo reemplazo")
-
         lista_final = r.reemplazar(self.poblacion_inicial.cromosomas,
             hijos_finales)
-        for i in range(128):
-            if any(isinstance(el, list) for el in lista_final[i].secuencia):
-                    print("Error post reemplazo")
+
         # Creada la poblacion final, de los cuales solo interesa el primer
         # elemento, dado que la lista esta ordenada en forma descendente
 
@@ -196,10 +173,6 @@ class Problema(object):
         self.mejores_fitness.append(lista_final[0].fitness)
         #Finalmente Reasignamos poblacion inicial
         self.poblacion_inicial.cromosomas = copy.deepcopy(lista_final)
-        # for i in range(128):
-        #    print("Cromosoma nro", i)
-        #    print(self.poblacion_inicial.cromosomas[i].secuencia)
-        #    print(self.poblacion_inicial.cromosomas[i].fitness)
 
     def mostrar_solucion(self):
         print("Mejor costo:" + str(self.best_makespan))
@@ -212,7 +185,7 @@ class Problema(object):
     def resolver(self, metodo_crossover, metodo_mutacion, iterations=500):
         self.max_iterations = iterations
         problema = self
-        print((sys.argv[1]))
+        print("Calculando...")
         if len(sys.argv) == 2:
             problema.datos = problema.parsear(sys.argv[1])
         else:
@@ -244,9 +217,9 @@ class Problema(object):
         # Mejor costo
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\t".format(self.best_makespan))
-            text_file.write("{}\t".format(self.fit_prom))
-            text_file.write("{}\t".format(self.best_makespan_time))
-            text_file.write("{}\t".format(self.tiempo_ejecucion))
+            text_file.write("{0:.2f}\t".format(self.fit_prom))
+            text_file.write("{0:.2f}\t".format(self.best_makespan_time))
+            text_file.write("{0:.2f}\t".format(self.tiempo_ejecucion))
             text_file.write("{}\t".format(self.best_iteration))
             text_file.write("{}\n".format(self.max_iterations))
 
@@ -306,6 +279,6 @@ class Problema(object):
 if __name__ == "__main__":
     p = Problema()
     #p.resolverTodos(30, 500)
-    #p.resolverUno(1, 1)
-    p.resolverXVeces(1, 1, 2)
+    p.resolverUno(1, 1)
+    #p.resolverXVeces(1, 1, 2)
     p.mostrar_solucion()

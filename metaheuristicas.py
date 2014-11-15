@@ -388,3 +388,19 @@ class Reemplazo(object):
         del poblacion_rta[len(poblacion_rta) // 2:]
 
         return poblacion_rta
+
+    def reemplazarwe(self, poblacion1, poblacion2, tamano_poblacion):
+        #Junto Listas
+        poblacion_rta = [0] * tamano_poblacion
+        poblacion = poblacion1 + poblacion2
+        # Ordeno por fitness de manera descendente
+        poblacion.sort(key=lambda x: x.fitness, reverse=False)
+        poblacion_rta[0] = poblacion[0]
+        for i in range(1, tamano_poblacion):
+            c1 = random.choice(poblacion1)
+            c2 = random.choice(poblacion2)
+            if c1.fitness >= c2.fitness:
+                poblacion_rta[i] = c1
+            else:
+                poblacion_rta[i] = c2
+        return poblacion_rta
