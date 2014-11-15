@@ -41,7 +41,8 @@ class Problema(object):
     best_makespan_time = 0
     tiempo_ejecucion = 0
     tiempo_inicial = 0
-
+    mejores_fitness = []
+    fit_prom = 0
     poblacion_inicial = []
 
     def __init__(self):
@@ -111,7 +112,7 @@ class Problema(object):
                 # Analizo el método de cruce seteado
                 if metodo_crossover == 1:
                     # Utilizo PMX
-                    crossover = PMX()
+                    crossover = PMXa()
                     childs = crossover.cruzar(padres[0], padres[1])
                     hijos.append(childs[0])
                     hijos.append(childs[1])
@@ -166,9 +167,9 @@ class Problema(object):
             hijos = []
         # Termina while, estan creados los hijos finales
         #-----------  REEMPLAZO  ----------
-        for elem in hijos_finales:
+        for i, elem in enumerate(hijos_finales):
             #print("Antes mp: ", elem.secuencia)
-            elem.fitness = self.cmakespan(self.datos,
+            hijos_finales[i].fitness = self.cmakespan(self.datos,
                     elem.secuencia)
         r = Reemplazo()
 
@@ -191,22 +192,22 @@ class Problema(object):
             self.best_iteration = self.iteracion
             self.best_makespan_time = time.time() - self.tiempo_inicial
 
+        # Agrego este mejor makespan a la lista para calcular promedio
+        self.mejores_fitness.append(lista_final[0].fitness)
         #Finalmente Reasignamos poblacion inicial
         self.poblacion_inicial.cromosomas = copy.deepcopy(lista_final)
+        # for i in range(128):
+        #    print("Cromosoma nro", i)
+        #    print(self.poblacion_inicial.cromosomas[i].secuencia)
+        #    print(self.poblacion_inicial.cromosomas[i].fitness)
 
     def mostrar_solucion(self):
-        print(("Mejor costo:" + str(self.best_makespan)))
-        costo_total = 0
-        tamano = self.poblacion_inicial.tamano
-        for i in range(tamano):
-            costo_total = costo_total + \
-            self.poblacion_inicial.cromosomas[i].fitness
-        costo_promedio = costo_total / tamano
-        print(("Costo Promedio: " + str(costo_promedio)))
-        print(("Tiempo Mejor Costo: " + str(self.best_makespan_time)))
-        print(("Tiempo Total Ejecucion: " + str(self.tiempo_ejecucion)))
-        print(("Mejor Iteracion: " + str(self.best_iteration)))
-        print(("Total Iteraciones: " + str(self.max_iterations)))
+        print("Mejor costo:" + str(self.best_makespan))
+        print("Promedio de los mejores costos: " + str(self.fit_prom))
+        print("Tiempo Mejor Costo: " + str(self.best_makespan_time))
+        print("Tiempo Total Ejecucion: " + str(self.tiempo_ejecucion))
+        print("Mejor Iteracion: " + str(self.best_iteration))
+        print("Total Iteraciones: " + str(self.max_iterations))
 
     def resolver(self, metodo_crossover, metodo_mutacion, iterations=500):
         self.max_iterations = iterations
@@ -235,23 +236,15 @@ class Problema(object):
         while self.iteracion < self.max_iterations:
             self.evolucionar(metodo_crossover, metodo_mutacion)
             self.iteracion += 1
-
+        self.fit_prom = (sum(self.mejores_fitness) /
+            float(len(self.mejores_fitness)))
         self.tiempo_ejecucion = time.time() - self.tiempo_inicial
 
     def grabar_solucion(self):
         # Mejor costo
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\t".format(self.best_makespan))
-        costo_total = 0
-        tamano = self.poblacion_inicial.tamano
-        for i in range(tamano):
-            costo_total = costo_total + \
-            self.poblacion_inicial.cromosomas[i].fitness
-        costo_promedio = costo_total / tamano
-
-        with open("Resultados.txt", "a") as text_file:
-            # Costo promedio
-            text_file.write("{}\t".format(costo_promedio))
+            text_file.write("{}\t".format(self.fit_prom))
             text_file.write("{}\t".format(self.best_makespan_time))
             text_file.write("{}\t".format(self.tiempo_ejecucion))
             text_file.write("{}\t".format(self.best_iteration))
@@ -265,7 +258,7 @@ class Problema(object):
             self.resolver(1, 1, iterations)
             self.grabar_solucion()
             self = Problema()
-        """
+
         #PMX y DISPLACEMENT
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\n".format("***** PMX y DISPLACEMENT *****"))
@@ -287,15 +280,32 @@ class Problema(object):
             self.resolver(0, 0, iterations)
             self.grabar_solucion()
             self = Problema()
-        """
         print("\a")
 
     def resolverUno(self, cross, mut, iterations=500):
         self.resolver(cross, mut, iterations)
         self.grabar_solucion()
 
+    def resolverXVeces(self, cross, mut, cant_ejecuciones, iterations=500):
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("{}".format("***** "))
+            if(cross == 1):
+                text_file.write("{}".format("PMX & "))
+            else:
+                text_file.write("{}".format("CX & "))
+            if(mut == 1):
+                text_file.write("{}".format("INVERTION "))
+            else:
+                text_file.write("{}".format("DISPLACEMENT "))
+            text_file.write("{}\n".format(" *****"))
+        for i in range(cant_ejecuciones):
+            self.resolver(cross, mut, iterations)
+            self.grabar_solucion()
+            self = Problema()
+
 if __name__ == "__main__":
     p = Problema()
     #p.resolverTodos(30, 500)
-    p.resolverUno(1, 0)
+    #p.resolverUno(1, 1)
+    p.resolverXVeces(1, 1, 2)
     p.mostrar_solucion()

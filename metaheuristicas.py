@@ -68,6 +68,48 @@ class Crossover(object):
         super(Crossover, self).__init__()
 
 
+class PMXa(Crossover):
+    """docstring for PMXa"""
+    def __init__(self):
+        super(PMXa, self).__init__()
+
+    def cruzar(self, cromosoma1, cromosoma2):
+        lista_respuesta = []
+        h1 = Cromosoma(cromosoma1.tamano)
+        h2 = Cromosoma(cromosoma2.tamano)
+        h1.secuencia = copy.deepcopy(cromosoma1.secuencia)
+        h2.secuencia = copy.deepcopy(cromosoma2.secuencia)
+        #Genero dos posiciones al azar teniendo en cuenta el tamano del cromo
+        pos1 = random.randint(0, cromosoma1.tamano)
+        pos2 = random.randint(0, cromosoma2.tamano)
+        if pos1 <= pos2:
+            pos_inicial = pos1
+            pos_final = pos2
+        else:
+            pos_inicial = pos2
+            pos_final = pos1
+        i = 0
+        for i in range(pos_inicial, pos_final):
+            replace = [h1.secuencia[i], h2.secuencia[i]]
+            j = 0
+            for j, el in enumerate(h1.secuencia):
+                if el in replace:
+                    if el == replace[0]:
+                        h1.secuencia[j] = replace[1]
+                    else:
+                        h1.secuencia[j] = replace[0]
+            j = 0
+            for j, el in enumerate(h2.secuencia):
+                if el in replace:
+                    if el == replace[0]:
+                        h2.secuencia[j] = replace[1]
+                    else:
+                        h2.secuencia[j] = replace[0]
+        lista_respuesta.append(h1)
+        lista_respuesta.append(h2)
+        return lista_respuesta
+
+
 class PMX(Crossover):
     """docstring for PMX"""
     def __init__(self):
@@ -193,48 +235,26 @@ class CX(Crossover):
             lista_hijos.append(h1)
             lista_hijos.append(h2)
         else:
-            for i in range(0, 2):
-                ciclo_actual = lista_ciclos[i]
-                hijo = Cromosoma(len(padre1))
-                if i == 0:
-                    hijo.secuencia = copy.deepcopy(padre2)
-                else:
-                    hijo.secuencia = copy.deepcopy(padre1)
-                for j in range(hijo.tamano):
-                    if j in ciclo_actual:
-                        if i == 0:
-                            hijo.secuencia[j] = padre1[j]
-                        else:
-                            hijo.secuencia[j] = padre2[j]
-                lista_hijos.append(hijo)
-            """
-            ciclo1 = lista_ciclos[0]
-            print "ciclo1" + str(ciclo1)
-            ciclo2 = lista_ciclos[1]
-            print "ciclo2" + str(ciclo2)
+            ciclo_actual = lista_ciclos[0]
             hijo1 = Cromosoma(len(padre1))
-            print "padre2 1 vez: " + str(padre2)
-            hijo1.secuencia = copy.deepcopy(padre2)
-            print "padre2 2 vez: " + str(padre2)
-            print "hijo1 secuencia inicial: " + str(hijo1.secuencia)
-            for j in range(hijo1.tamano):
-                print "padre 2 for 1: " + str(padre2)
-                if j in ciclo1:
-                    hijo1.secuencia[j] = padre1[j]
-
             hijo2 = Cromosoma(len(padre1))
-            print "padre2 3 vez: " + str(padre2)
-            hijo2.secuencia = copy.deepcopy(padre2)
-            print "padre2 4 vez: " + str(padre2)
-            print "hijo2 secuencia inicial: " + str(hijo2.secuencia)
-            for k in range(hijo2.tamano):
-                if k in ciclo2:
-                    hijo2.secuencia[k] = padre1[k]
-        print "hijo1 secuencia final: " + str(hijo1.secuencia)
-        print "hijo2 secuencia final: " + str(hijo2.secuencia)
-        lista_hijos.append(hijo1.secuencia)
-        lista_hijos.append(hijo2.secuencia)
-        """
+            hijo1.secuencia = []
+            hijo2.secuencia = []
+            # Genero offspring 1
+            for i, el in enumerate(padre1):
+                if i in ciclo_actual:
+                    hijo1.secuencia.append(padre1[i])
+                else:
+                    hijo1.secuencia.append(padre2[i])
+            # Genero offspring 2
+            for i, el in enumerate(padre2):
+                if i in ciclo_actual:
+                    hijo2.secuencia.append(padre2[i])
+                else:
+                    hijo2.secuencia.append(padre1[i])
+
+            lista_hijos.append(hijo1)
+            lista_hijos.append(hijo2)
         #print "lista hijos: " + str(lista_hijos)
         return lista_hijos
 
@@ -248,22 +268,23 @@ class CX(Crossover):
         lista_ciclos = []
         for i in range(len(secuencia1)):
             # Revisamos que dos elementos en la misma posicion sean !=
-            if secuencia2[i] != secuencia1[i]:
-                if not self.esta_en_lista(i, lista_ciclos):
-                    c = self.armar_ciclo(i, secuencia1, secuencia2)
-                    lista_ciclos.append(c)
+            # if secuencia2[i] != secuencia1[i]:
+            if not self.esta_en_lista(i, lista_ciclos):
+                c = self.armar_ciclo(i, secuencia1, secuencia2)
+                lista_ciclos.append(c)
         return lista_ciclos
 
     def cruzar(self, cromosoma1, cromosoma2):
         lista_rta = []
         #Reviso que los padres sean diferentes
-        if cromosoma1.secuencia != cromosoma2.secuencia:
+        # if cromosoma1.secuencia != cromosoma2.secuencia:
             #Busco ciclos entre los dos padres
-            lista_ciclos = self.buscar_ciclos(cromosoma1.secuencia,
-            cromosoma2.secuencia)
-            lista_rta = self.generar_hijos(lista_ciclos, cromosoma1.secuencia,
-            cromosoma2.secuencia)
+        lista_ciclos = self.buscar_ciclos(cromosoma1.secuencia,
+        cromosoma2.secuencia)
+        lista_rta = self.generar_hijos(lista_ciclos, cromosoma1.secuencia,
+        cromosoma2.secuencia)
         # Si los padres son iguales los hijos iguales
+        """
         else:
             h1 = Cromosoma(cromosoma1.tamano)
             h2 = Cromosoma(cromosoma1.tamano)
@@ -271,6 +292,7 @@ class CX(Crossover):
             h2.secuencia = cromosoma1.secuencia
             lista_rta.append(h1)
             lista_rta.append(h2)
+        """
         return lista_rta
 
 
