@@ -24,6 +24,7 @@ datos = [[14, 23, 34], [16, 12, 10], [23, 7, 29]]
 
 """
 
+
 class Problema(object):
     """docstring for Problema"""
 
@@ -56,7 +57,7 @@ class Problema(object):
         t = [0] * len(datos[0])
         for j in secuencia:
             for m in range(len(datos[j])):
-                if m == 0:  # == 1
+                if m == 0:
                     t[m] = t[m] + datos[j][m]
                 else:
                     if t[m - 1] > t[m]:
@@ -185,7 +186,6 @@ class Problema(object):
     def resolver(self, metodo_crossover, metodo_mutacion, iterations=500):
         self.max_iterations = iterations
         problema = self
-        print("Calculando...")
         if len(sys.argv) == 2:
             problema.datos = problema.parsear(sys.argv[1])
         else:
@@ -227,35 +227,59 @@ class Problema(object):
         #PMX e INVERTION
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\n".format("***** PMX e INVERTION *****"))
+        print("***** PMX e INVERTION *****")
         for i in range(cant_ejecuciones):
             self.resolver(1, 1, iterations)
+            porc = (i / cant_ejecuciones) * 100
+            print ("Fase 1: %.2f %% completado" % porc)
+            rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i) +
+                self.tiempo_ejecucion * cant_ejecuciones * 3) / 60)
+            print("Tiempo estimado restante total: %.2f minutos" % rest)
             self.grabar_solucion()
             self = Problema()
 
         #PMX y DISPLACEMENT
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\n".format("***** PMX y DISPLACEMENT *****"))
+        print("***** PMX y DISPLACEMENT *****")
         for i in range(cant_ejecuciones):
             self.resolver(1, 0, iterations)
+            porc = (i / cant_ejecuciones) * 100
+            print ("Fase 2: %.2f %% completado" % porc)
+            rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i) +
+                self.tiempo_ejecucion * cant_ejecuciones * 2) / 60)
+            print("Tiempo estimado restante total: %.2f minutos" % rest)
             self.grabar_solucion()
             self = Problema()
         #CX e INVERTION
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\n".format("***** CX e INVERTION *****"))
+        print("***** CX e INVERTION *****")
         for i in range(cant_ejecuciones):
             self.resolver(0, 1, iterations)
+            porc = (i / cant_ejecuciones) * 100
+            print ("Fase 3: %.2f %% completado" % porc)
+            rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i) +
+                self.tiempo_ejecucion * cant_ejecuciones) / 60)
+            print("Tiempo estimado restante total: %.2f minutos" % rest)
             self.grabar_solucion()
             self = Problema()
         #CX y DISPLACEMENT
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\n".format("***** CX y DISPLACEMENT *****"))
+        print("***** CX y DISPLACEMENT *****")
         for i in range(cant_ejecuciones):
             self.resolver(0, 0, iterations)
+            porc = (i / cant_ejecuciones) * 100
+            print ("Fase 4: %.2f %% completado" % porc)
+            rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i)) / 60)
+            print("Tiempo estimado restante total: %.2f minutos" % rest)
             self.grabar_solucion()
             self = Problema()
         print("\a")
 
     def resolverUno(self, cross, mut, iterations=500):
+        print("Calculando...")
         self.resolver(cross, mut, iterations)
         self.grabar_solucion()
 
@@ -272,13 +296,14 @@ class Problema(object):
                 text_file.write("{}".format("DISPLACEMENT "))
             text_file.write("{}\n".format(" *****"))
         for i in range(cant_ejecuciones):
+            print ((i / cant_ejecuciones) * 100, "% completado")
             self.resolver(cross, mut, iterations)
             self.grabar_solucion()
             self = Problema()
 
 if __name__ == "__main__":
     p = Problema()
-    #p.resolverTodos(30, 500)
-    p.resolverUno(1, 1)
+    p.resolverTodos(30, 500)
+    #p.resolverUno(1, 1)
     #p.resolverXVeces(1, 1, 2)
     p.mostrar_solucion()
