@@ -224,13 +224,17 @@ class Problema(object):
             text_file.write("{}\n".format(self.max_iterations))
 
     def resolverTodos(self, cant_ejecuciones, iterations=500):
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("\n{}".format("=============== INICIO DE "))
+            text_file.write("{}".format(sys.argv[1]))
+            text_file.write("{}\n".format(" ==============="))
         #PMX e INVERTION
         with open("Resultados.txt", "a") as text_file:
             text_file.write("{}\n".format("***** PMX e INVERTION *****"))
         print("***** PMX e INVERTION *****")
         for i in range(cant_ejecuciones):
             self.resolver(1, 1, iterations)
-            porc = (i / cant_ejecuciones) * 100
+            porc = (i / float(cant_ejecuciones)) * 100
             print ("Fase 1: %.2f %% completado" % porc)
             rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i) +
                 self.tiempo_ejecucion * cant_ejecuciones * 3) / 60)
@@ -244,7 +248,7 @@ class Problema(object):
         print("***** PMX y DISPLACEMENT *****")
         for i in range(cant_ejecuciones):
             self.resolver(1, 0, iterations)
-            porc = (i / cant_ejecuciones) * 100
+            porc = (i / float(cant_ejecuciones)) * 100
             print ("Fase 2: %.2f %% completado" % porc)
             rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i) +
                 self.tiempo_ejecucion * cant_ejecuciones * 2) / 60)
@@ -257,7 +261,7 @@ class Problema(object):
         print("***** CX e INVERTION *****")
         for i in range(cant_ejecuciones):
             self.resolver(0, 1, iterations)
-            porc = (i / cant_ejecuciones) * 100
+            porc = (i / float(cant_ejecuciones)) * 100
             print ("Fase 3: %.2f %% completado" % porc)
             rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i) +
                 self.tiempo_ejecucion * cant_ejecuciones) / 60)
@@ -270,12 +274,16 @@ class Problema(object):
         print("***** CX y DISPLACEMENT *****")
         for i in range(cant_ejecuciones):
             self.resolver(0, 0, iterations)
-            porc = (i / cant_ejecuciones) * 100
+            porc = (i / float(cant_ejecuciones)) * 100
             print ("Fase 4: %.2f %% completado" % porc)
             rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i)) / 60)
             print("Tiempo estimado restante total: %.2f minutos" % rest)
             self.grabar_solucion()
             self = Problema()
+        with open("Resultados.txt", "a") as text_file:
+            text_file.write("\n{}".format("=============== FIN DE "))
+            text_file.write("{}".format(sys.argv[1]))
+            text_file.write("{}\n".format(" ==============="))
         print("\a")
 
     def resolverUno(self, cross, mut, iterations=500):
