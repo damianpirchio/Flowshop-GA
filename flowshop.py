@@ -34,7 +34,7 @@ class Problema(object):
     upper_bound = 0
     lower_bound = 0
     max_iterations = 500
-    tamano_poblacion = 128
+    tamano_poblacion = 1024
     iteracion = 0
     best_makespan = 999999
     best_iteration = 0
@@ -304,14 +304,18 @@ class Problema(object):
                 text_file.write("{}".format("DISPLACEMENT "))
             text_file.write("{}\n".format(" *****"))
         for i in range(cant_ejecuciones):
-            print ((i / cant_ejecuciones) * 100, "% completado")
             self.resolver(cross, mut, iterations)
+            porc = (i / float(cant_ejecuciones)) * 100
+            print ("%.2f %% completado" % porc)
+            rest = ((self.tiempo_ejecucion * (cant_ejecuciones - i) / 60))
+            print("Tiempo estimado restante total: %.2f minutos" % rest)
             self.grabar_solucion()
             self = Problema()
+        print("\a")
 
 if __name__ == "__main__":
     p = Problema()
-    p.resolverTodos(30, 500)
+    #p.resolverTodos(30, 500)
     #p.resolverUno(1, 1)
-    #p.resolverXVeces(1, 1, 2)
+    p.resolverXVeces(1, 1, 2)
     p.mostrar_solucion()
