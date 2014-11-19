@@ -34,7 +34,7 @@ class Problema(object):
     upper_bound = 0
     lower_bound = 0
     max_iterations = 500
-    tamano_poblacion = 1024
+    tamano_poblacion = 128
     iteracion = 0
     best_makespan = 999999
     best_iteration = 0
@@ -315,7 +315,7 @@ class Problema(object):
 
 if __name__ == "__main__":
     p = Problema()
-    #p.resolverTodos(30, 500)
+    p.resolverTodos(30, 500)
     #p.resolverUno(1, 1)
-    p.resolverXVeces(1, 1, 2)
+    #p.resolverXVeces(1, 1, 4)
     p.mostrar_solucion()
