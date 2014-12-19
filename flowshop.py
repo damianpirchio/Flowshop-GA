@@ -103,7 +103,7 @@ class Problema(object):
             probabilidad_cruce = random.randint(0, 100)
             if probabilidad_cruce >= 35:
                 #-----------  CROSSOVER  ----------
-                # Analizo el método de cruce seteado
+                # Analizo el metodo de cruce seteado
                 if metodo_crossover == 1:
                     # Utilizo PMX
                     crossover = PMXa()
